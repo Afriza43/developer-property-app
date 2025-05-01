@@ -19,6 +19,12 @@ return new class extends Migration
             $table->decimal('total_cost', 13)->nullable();
             $table->string('image')->nullable();
         });
+
+        Schema::create('user_access', function (Blueprint $table) {
+            $table->id('id');
+            $table->foreignId('user_id')->constrained('users', 'user_id');
+            $table->foreignId('project_id')->constrained('projects', 'project_id')->onDelete('cascade');
+        });
     }
 
     /**
@@ -27,5 +33,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('projects');
+        Schema::dropIfExists('user_access');
     }
 };

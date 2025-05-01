@@ -15,8 +15,14 @@ return new class extends Migration
             $table->id('progress_reports_id');
             $table->string('description', 50);
             $table->date('report_date');
-            $table->string('progress_photo', 255);
             $table->foreignId('house_id')->references('house_id')->on('houses')->onDelete('cascade');
+        });
+
+        Schema::create('progress_photos', function (Blueprint $table) {
+            $table->id('photo_id');
+            $table->string('image', 255);
+            $table->foreignId('progress_reports_id')->references('progress_reports_id')->on('progress_reports')->onDelete('cascade');
+            $table->timestamps();
         });
     }
 
@@ -26,5 +32,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('progress_reports');
+        Schema::dropIfExists('progress_photos');
     }
 };

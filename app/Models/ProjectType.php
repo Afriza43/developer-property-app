@@ -2,15 +2,15 @@
 
 namespace App\Models;
 
+use App\Models\Project;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class House extends Model
+class ProjectType extends Model
 {
     protected $guarded = [];
-    protected $primaryKey = 'house_id';
+    protected $primaryKey = 'type_id';
     public $timestamps = false;
 
     public function project(): BelongsTo
@@ -18,13 +18,8 @@ class House extends Model
         return $this->belongsTo(Project::class, 'project_id');
     }
 
-    public function expense_reports(): HasMany
+    public function job_categories(): BelongsToMany
     {
-        return $this->hasMany(ExpenseReport::class, 'house_id');
-    }
-
-    public function progress_reports(): HasMany
-    {
-        return $this->hasMany(ProgressReport::class, 'house_id');
+        return $this->belongsToMany(JobCategory::class, 'rab_type', 'type_id', 'category_id')->withPivot('budget_plan');
     }
 }

@@ -14,6 +14,6 @@ class Material extends Model
     public function jobs(): BelongsToMany
     {
         return $this->belongsToMany(Job::class, 'job_has_materials', 'material_id', 'job_id')
-            ->withPivot('koefisien', 'total_cost');
+            ->withPivot('koefisien', 'total_cost', 'material_cost');
     }
 }

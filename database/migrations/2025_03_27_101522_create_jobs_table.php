@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('job_name', 30);
             $table->double('total_volume')->nullable();
             $table->char('satuan_volume', 5)->nullable();
-            $table->foreignId('category_id')->references('category_id')->on('job_categories')->onDelete('cascade');
         });
 
         Schema::create('sub_jobs', function (Blueprint $table) {
@@ -33,5 +32,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('jobs');
+        Schema::dropIfExists('sub_jobs');
     }
 };
