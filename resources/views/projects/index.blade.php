@@ -33,27 +33,37 @@
         </section>
         <section>
             <div class="container mx-3 mb-3">
-                <a href="{{ route('projects.create') }}"><button type="button" class="btn btn-primary col-md-2">Tambah
-                        Proyek</button></a>
+                <button type="button" data-bs-toggle="modal" data-bs-target="#createProjectModal"
+                    class="btn btn-primary col-md-2">Tambah
+                    Proyek
+                </button>
             </div>
             <div class="card p-3 mx-4">
                 <h5>Tampilkan Berdasarkan :</h5>
                 <div class="row">
-                    <div class="col-md-8">
-                        <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
-                            <label for="search" class="mx-1 mb-2">Nama Proyek : </label>
-                            <input type="search" class="form-control" placeholder="Cari Proyek" aria-label="Search">
-                        </form>
-                    </div>
-                    <div class="col-md-4">
-                        <label for="search" class="mx-1 mb-2">Lokasi : </label>
-                        <select class="form-select" placeholder="Cari Tahun">
-                            <option selected>Pilih Lokasi</option>
-                            <option value="1">Semarang</option>
-                            <option value="2">Pekalongan</option>
-                            <option value="3">Sumedang</option>
-                        </select>
-                    </div>
+                    <form method="GET" action="{{ route('projects.index') }}" class="row">
+                        <div class="col-md-8">
+                            <label for="search" class="mx-1 mb-2">Nama Proyek :</label>
+                            <input type="search" name="search" class="form-control" value="{{ request('search') }}"
+                                placeholder="Cari Proyek">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="location" class="mx-1 mb-2">Lokasi :</label>
+                            <select class="form-select" name="location">
+                                <option value="">Pilih Lokasi</option>
+                                <option value="Semarang" {{ request('location') == 'Semarang' ? 'selected' : '' }}>
+                                    Semarang</option>
+                                <option value="Pekalongan" {{ request('location') == 'Pekalongan' ? 'selected' : '' }}>
+                                    Pekalongan</option>
+                                <option value="Sumedang" {{ request('location') == 'Sumedang' ? 'selected' : '' }}>
+                                    Sumedang</option>
+                            </select>
+                        </div>
+                        <div class="col-12 mt-2">
+                            <button type="submit" class="btn btn-primary">Cari</button>
+                        </div>
+                    </form>
+
                 </div>
         </section>
         <section>
@@ -104,4 +114,50 @@
                 </div>
         </section>
     </main>
+    <!-- Create Project Modal -->
+    <div class="modal fade" id="createProjectModal" tabindex="-1" aria-labelledby="createProjectModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <form action="{{ route('projects.store') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="createProjectModalLabel">Buat Proyek Baru</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Tutup"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="project_name" class="form-label">Nama Proyek</label>
+                            <input type="text" class="form-control" id="project_name" name="project_name"
+                                placeholder="Nama Proyek">
+                        </div>
+                        <div class="mb-3">
+                            <label for="location" class="form-label">Lokasi</label>
+                            <input type="text" class="form-control" id="location" name="location"
+                                placeholder="Lokasi">
+                        </div>
+                        <div class="mb-3">
+                            <label for="year" class="form-label">Tahun</label>
+                            <input type="text" class="form-control" id="year" name="year"
+                                placeholder="Tahun">
+                        </div>
+                        <div class="mb-3">
+                            <label for="image">Upload Gambar</label>
+                            <input type="file" name="image" class="form-control" id="image">
+                            @error('image')
+                                <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
+                        <input type="hidden" name="total_cost" value="">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Simpan</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
 </x-body>

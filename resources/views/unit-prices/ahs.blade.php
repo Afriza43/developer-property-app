@@ -290,12 +290,12 @@
                                             <th></th>
                                         </tr>
                                         <tr class="text-end">
-                                            <th colspan="5">PPN 10%</th>
+                                            <th colspan="5">Overhead & Profit (10%)</th>
                                             <th>Rp {{ number_format($ppn, 0, ',', '.') }}</th>
                                             <th></th>
                                         </tr>
                                         <tr class="fw-bold text-end">
-                                            <th colspan="5">Total Biaya + PPN</th>
+                                            <th colspan="5">Total Biaya + Overhead</th>
                                             <th>Rp {{ number_format($grandTotal, 0, ',', '.') }}</th>
                                             <th></th>
                                         </tr>

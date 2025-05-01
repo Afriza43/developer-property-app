@@ -16,15 +16,15 @@ class UserSeeder extends Seeder
         $kasir = User::create([
             'name' => 'Nila',
             'email' => 'kasir@gmail.com',
-            'password' => bcrypt('12345678'),
+            'password' => bcrypt('12345'),
         ]);
 
         $kasir->assignRole('kasir');
 
         $user = User::create([
-            'name' => 'Heru',
+            'name' => 'Kendarto',
             'email' => 'teknik@gmail.com',
-            'password' => bcrypt('12345678'),
+            'password' => bcrypt('12345'),
         ]);
 
         $user->assignRole('teknik');

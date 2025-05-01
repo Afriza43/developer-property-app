@@ -16,15 +16,15 @@ return new class extends Migration
             $table->string('description', 50);
             $table->string('equipment_name', 20);
             $table->char('equipment_unit', length: 5);
-            $table->decimal('equipment_cost', 10);
         });
 
         Schema::create('job_has_equipments', function (Blueprint $table) {
             $table->id();
             $table->double('koefisien');
             $table->decimal('total_cost', 10);
-            $table->foreignId('job_id')->references('job_id')->on('jobs');
-            $table->foreignId('equipment_id')->references('equipment_id')->on('equipments');
+            $table->decimal('equipment_cost', 10);
+            $table->foreignId('job_id')->references('job_id')->on('jobs')->onDelete('cascade');
+            $table->foreignId('equipment_id')->references('equipment_id')->on('equipments')->onDelete('cascade');
         });
     }
 

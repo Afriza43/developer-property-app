@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('description', 50);
             $table->decimal('total_expense', 10);
             $table->string('evidence');
-            $table->foreignId('house_id')->references('house_id')->on('houses');
+            $table->foreignId('house_id')->references('house_id')->on('houses')->onDelete('cascade');
             $table->date('purchase_date');
         });
     }

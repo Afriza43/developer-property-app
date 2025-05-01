@@ -45,8 +45,14 @@ class ProjectRepository implements ProjectRepositoryInterface
         $project->delete();
         return $project;
     }
-    public function searchByName(string $name)
+    public function searchAndFilter($search = null, $location = null)
     {
-        return Project::where('name', 'like', '%' . $name . '%')->get();
+        $searchLocate = Project::when($search, function ($query, $search) {
+            $query->where('project_name', 'like', '%' . $search . '%');
+        })->when($location, function ($query, $location) {
+            $query->where('location', $location);
+        })->get();
+
+        return $searchLocate;
     }
 }

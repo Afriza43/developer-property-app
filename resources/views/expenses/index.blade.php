@@ -22,6 +22,8 @@
                                 <div class="buttons">
                                     <a href="{{ route('expenses.create', ['house_id' => $house->house_id]) }}"
                                         class="btn btn-success">Tambah Data</a>
+                                    <a href="{{ route('houses.index', ['project_id' => $house->project->project_id]) }}"
+                                        class="btn btn-danger">Kembali</a>
                                 </div>
                             </div>
                         </div>

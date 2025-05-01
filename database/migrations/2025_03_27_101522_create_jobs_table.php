@@ -14,10 +14,16 @@ return new class extends Migration
         Schema::create('jobs', function (Blueprint $table) {
             $table->id('job_id');
             $table->string('job_name', 30);
-            $table->decimal('total_cost', 11)->nullable();
             $table->double('total_volume')->nullable();
             $table->char('satuan_volume', 5)->nullable();
-            $table->foreignId('category_id')->references('category_id')->on('job_categories');
+            $table->foreignId('category_id')->references('category_id')->on('job_categories')->onDelete('cascade');
+        });
+
+        Schema::create('sub_jobs', function (Blueprint $table) {
+            $table->id('id');
+            $table->decimal('job_cost', 11)->nullable();
+            $table->foreignId('category_id')->constrained('job_categories', 'category_id')->onDelete('cascade');
+            $table->foreignId('job_id')->constrained('jobs', 'job_id')->onDelete('cascade');
         });
     }
 

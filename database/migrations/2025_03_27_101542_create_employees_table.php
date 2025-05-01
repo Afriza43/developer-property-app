@@ -15,15 +15,15 @@ return new class extends Migration
             $table->id('employee_id');
             $table->string('position', 25);
             $table->char('unit', length: 5);
-            $table->decimal('wage', 10);
         });
 
         Schema::create('job_has_employees', function (Blueprint $table) {
             $table->id();
             $table->double('koefisien');
             $table->decimal('total_cost', 10);
-            $table->foreignId('job_id')->references('job_id')->on('jobs');
-            $table->foreignId('employee_id')->references('employee_id')->on('employees');
+            $table->foreignId('job_id')->references('job_id')->on('jobs')->onDelete('cascade');
+            $table->foreignId('employee_id')->references('employee_id')->on('employees')->onDelete('cascade');
+            $table->decimal('wage', 10);
         });
     }
 

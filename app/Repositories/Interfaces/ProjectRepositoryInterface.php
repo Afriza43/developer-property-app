@@ -10,5 +10,5 @@ interface ProjectRepositoryInterface
     public function updateProject($id, array $data);
     public function deleteProject($id);
     public function getHouseByProject($project);
-    public function searchByName(string $name);
+    public function searchAndFilter($search, $location);
 }

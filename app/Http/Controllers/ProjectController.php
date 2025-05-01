@@ -17,10 +17,14 @@ class ProjectController extends Controller
         $this->projectRepository = $projectRepository;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $projects = $this->projectRepository->getAllProject();
-        return view('projects.index', compact('projects'));
+        $search = $request->input('search');
+        $location = $request->input('location');
+
+        $projects = $this->projectRepository->searchAndFilter($search, $location);
+
+        return view('projects.index', compact('projects', 'search', 'location'));
     }
 
     /**
@@ -38,11 +42,10 @@ class ProjectController extends Controller
     {
         $validator = $request->validate([
             'project_name' => 'required',
-            'description' => 'required',
             'location' => 'required',
             'year' => 'required|digits:4|integer',
             'total_cost' => 'nullable',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg|file|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|file',
         ]);
 
         $this->projectRepository->createProject($validator);
@@ -75,7 +78,6 @@ class ProjectController extends Controller
     {
         $validator = $request->validate([
             'project_name' => 'required',
-            'description' => 'required',
             'location' => 'required',
             'year' => 'required|digits:4|integer',
             'total_cost' => 'nullable',

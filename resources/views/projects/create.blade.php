@@ -61,10 +61,6 @@
                                             placeholder="Tahun">
                                     </div>
                                     <div class="mb-3">
-                                        <label for="description" class="form-label">Keterangan</label>
-                                        <textarea class="form-control" id="description" name="description"></textarea>
-                                    </div>
-                                    <div class="mb-3">
                                         <label for="image">Upload Gambar</label>
                                         <input type="file" name="image" class="form-control" id="image"
                                             @error('image')is-invalid @enderror>

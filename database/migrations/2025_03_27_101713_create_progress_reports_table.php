@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('description', 50);
             $table->date('report_date');
             $table->string('progress_photo', 255);
-            $table->foreignId('house_id')->references('house_id')->on('houses');
+            $table->foreignId('house_id')->references('house_id')->on('houses')->onDelete('cascade');
         });
     }
 

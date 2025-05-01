@@ -362,7 +362,7 @@
                                             <td></td>
                                         </tr>
                                         <tr>
-                                            <td colspan="5" class="text-end"><strong>ADMINISTRASI 10.00
+                                            <td colspan="5" class="text-end"><strong>PAJAK 10.00
                                                     %</strong>
                                             </td>
                                             <td class="text-end"><strong>Rp

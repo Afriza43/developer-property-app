@@ -16,15 +16,15 @@ return new class extends Migration
             $table->string('material_name', 25);
             $table->string('description', 50);
             $table->char('material_unit', length: 5);
-            $table->decimal('material_cost', 10);
         });
 
         Schema::create('job_has_materials', function (Blueprint $table) {
             $table->id();
             $table->double('koefisien');
             $table->decimal('total_cost', 10);
-            $table->foreignId('job_id')->references('job_id')->on('jobs');
-            $table->foreignId('material_id')->references('material_id')->on('materials');
+            $table->decimal('material_cost', 10);
+            $table->foreignId('job_id')->references('job_id')->on('jobs')->onDelete('cascade');
+            $table->foreignId('material_id')->references('material_id')->on('materials')->onDelete('cascade');
         });
     }
 

@@ -36,6 +36,8 @@
                 <a href="{{ route('houses.create', ['project_id' => $project->project_id]) }}"><button type="button"
                         class="btn btn-primary col-md-2">Tambah
                         Rumah</button></a>
+                <a href="{{ route('projects.index') }}"><button type="button"
+                        class="btn btn-danger col-md-2">Kembali</button></a>
             </div>
             <div class="card p-3 mx-4">
                 <h5>Tampilkan Berdasarkan :</h5>

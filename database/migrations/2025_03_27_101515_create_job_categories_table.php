@@ -14,8 +14,13 @@ return new class extends Migration
         Schema::create('job_categories', function (Blueprint $table) {
             $table->id('category_id');
             $table->string('category_name',);
-            $table->decimal('category_cost', 11)->nullable();
-            $table->foreignId('house_id')->constrained('houses', 'house_id');
+        });
+
+        Schema::create('house_has_jobs', function (Blueprint $table) {
+            $table->id('id');
+            $table->decimal('total_cost', 11)->nullable();
+            $table->foreignId('house_id')->constrained('houses', 'house_id')->onDelete('cascade');
+            $table->foreignId('category_id')->constrained('job_categories', 'category_id')->onDelete('cascade');
         });
     }
 
