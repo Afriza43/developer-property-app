@@ -12,9 +12,15 @@
     <!-- favicon -->
     <link rel="shortcut icon" href="{{ asset('dist/assets/compiled/svg/favicon.svg') }}" type="image/x-icon" />
 
+    <link rel="stylesheet" href="{{ asset('dist/assets/extensions/simple-datatables/style.css') }}">
     <link rel="stylesheet" href="{{ asset('dist/assets/compiled/css/app.css') }}" />
     <link rel="stylesheet" href="{{ asset('dist/assets/compiled/css/app-dark.css') }}" />
     <link rel="stylesheet" href="{{ asset('dist/assets/compiled/css/iconly.css') }}" />
+    <link rel="stylesheet" href="{{ asset('dist/assets/extensions/simple-datatables/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('dist/assets/extensions/filepond/filepond.css') }}">
+    <link rel="stylesheet"
+        href="{{ asset('dist/assets/extensions/filepond-plugin-image-preview/filepond-plugin-image-preview.css') }}">
+    <link rel="stylesheet" href="{{ asset('dist/assets/extensions/toastify-js/src/toastify.css') }}">
     <!-- untuk tempat sisipkan script css -->
     @stack('costum-css')
     {{-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -50,9 +56,35 @@
 
     <script src="{{ asset('dist/assets/compiled/js/app.js') }}"></script>
 
-    <!-- Need: Apexcharts -->
-    <script src="{{ asset('dist/assets/extensions/apexcharts/apexcharts.min.js') }}"></script>
     <script src="{{ asset('dist/assets/static/js/pages/dashboard.js') }}"></script>
+
+    <script src="{{ asset('dist/assets/extensions/simple-datatables/umd/simple-datatables.js') }}"></script>
+    <script src="{{ asset('dist/assets/static/js/pages/simple-datatables.js') }}"></script>
+
+    <script src="{{ asset('dist/assets/extensions/filepond-plugin-image-crop/filepond-plugin-image-crop.min.js') }}">
+    </script>
+
+    <script
+        src="{{ asset('dist/assets/extensions/filepond-plugin-file-validate-size/filepond-plugin-file-validate-size.min.js') }}">
+    </script>
+    <script
+        src="{{ asset('dist/assets/extensions/filepond-plugin-file-validate-type/filepond-plugin-file-validate-type.min.js') }}">
+    </script>
+    <script src="{{ asset('dist/assets/extensions/filepond-plugin-image-crop/filepond-plugin-image-crop.min.js') }}">
+    </script>
+    <script
+        src="{{ asset('dist/assets/extensions/filepond-plugin-image-exif-orientation/filepond-plugin-image-exif-orientation.min.js') }}">
+    </script>
+    <script src="{{ asset('dist/assets/extensions/filepond-plugin-image-filter/filepond-plugin-image-filter.min.js') }}">
+    </script>
+    <script src="{{ asset('dist/assets/extensions/filepond-plugin-image-preview/filepond-plugin-image-preview.min.js') }}">
+    </script>
+    <script src="{{ asset('dist/assets/extensions/filepond-plugin-image-resize/filepond-plugin-image-resize.min.js') }}">
+    </script>
+
+    <script src="{{ asset('dist/assets/extensions/filepond/filepond.js') }}"></script>
+    <script src="{{ asset('dist/assets/extensions/toastify-js/src/toastify.js') }}"></script>
+    <script src="{{ asset('dist/assets/static/js/pages/filepond.js') }}"></script>
     <!-- untuk tempat sisipkan script javascript -->
     @stack('costum-script')
 </body>

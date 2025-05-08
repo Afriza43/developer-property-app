@@ -25,6 +25,6 @@ class Project extends Model
 
     public function project_types(): HasMany
     {
-        return $this->hasMany(ProjectType::class, 'type_id');
+        return $this->hasMany(ProjectType::class, 'project_id');
     }
 }

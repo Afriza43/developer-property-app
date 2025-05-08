@@ -42,14 +42,14 @@ class ExpenseReportController extends Controller
         $data = $request->validate([
             'description'     => 'required|string|max:50',
             'total_expense'   => 'required',
-            'evidence'        => 'required|file|mimes:jpeg,png,jpg,pdf|max:2048',
+            'evidence'        => 'required|file|mimes:jpeg,png,jpg',
             'house_id'        => 'required|exists:houses,house_id',
             'purchase_date'   => 'required|date',
         ]);
 
-        // if ($request->hasFile('image')) {
-        //     $data['image'] = $request->file('image')->store('images/houses', 'public');
-        // }
+        if ($request->file('evidence')) {
+            $data['evidence'] = $request->file('evidence')->store('expense-report');
+        }
 
         $this->expenseRepository->createExpense($data);
 

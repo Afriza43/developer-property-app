@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Repositories\HouseRepository;
 use Illuminate\Http\Request;
+use App\Repositories\HouseRepository;
 
 class HouseController extends Controller
 {
@@ -29,9 +29,8 @@ class HouseController extends Controller
      */
     public function create(Request $request)
     {
-        $users = $this->houseRepository->getUser();
         $project_id = $request->query('project_id');
-        return view('houses.create', compact('users', 'project_id'));
+        return view('houses.create', compact('project_id'));
     }
 
     /**
@@ -40,32 +39,42 @@ class HouseController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name' => 'required',
-            'block_number' => 'required|integer',
-            'type' => 'required|integer',
-            'total_cost' => 'nullable',
+            'block' => 'required|string|max:8',
+            'number' => 'required|string|max:2',
+            'type' => 'required|string|max:8',
+            'house_cost' => 'nullable',
             'project_id' => 'required|exists:projects,project_id',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'password' => 'required',
         ]);
 
-        // if ($request->hasFile('image')) {
-        //     $data['image'] = $request->file('image')->store('images/houses', 'public');
-        // }
+        $data['name'] = $data['block'] . ' - No. ' . $data['number'];
 
         $this->houseRepository->createHouse($data);
 
-        return redirect()->route('houses.index', ['project_id' => $request->project_id])
-            ->with('success', 'Rumah berhasil ditambahkan.');
+        return redirect()->back()->with('success', 'Rumah berhasil ditambahkan.');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show($houseId)
+    public function show(Request $request, $houseId)
     {
-        return view('expenses.index', compact('houseId'));
+        $type = $request->query('type');
+
+        $house = $this->houseRepository->getHouse($houseId);
+        $expenseReports = [];
+        $progressReports = [];
+        $photos = collect();
+
+        if ($type === 'expenses') {
+            $expenseReports = $house->expense_reports;
+        } elseif ($type === 'progress') {
+            $progressReports = $house->progress_reports;
+            $photos = $this->houseRepository->showProgressPhoto($progressReports);
+        }
+
+        return view('unit-reports.index', compact('house', 'type', 'expenseReports', 'progressReports', 'photos'));
     }
+
 
     /**
      * Show the form for editing the specified resource.
@@ -82,19 +91,18 @@ class HouseController extends Controller
     public function update(Request $request, $houseId)
     {
         $data = $request->validate([
-            'name' => 'required',
-            'block_number' => 'required|integer',
-            'type' => 'required|integer',
-            'total_cost' => 'nullable',
+            'block' => 'required|string|max:8',
+            'number' => 'required|string|max:2',
+            'type' => 'required|string|max:8',
+            'house_cost' => 'nullable',
             'project_id' => 'required|exists:projects,project_id',
-            // 'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'password' => 'required',
         ]);
+
+        $data['name'] = $data['block'] . ' - No. ' . $data['number'];
 
         $house = $this->houseRepository->updateHouse($houseId, $data);
 
-        return redirect()->route('houses.index', ['project_id' => $house->project_id])
-            ->with('success', 'Rumah berhasil diperbarui.');
+        return redirect()->back()->with('success', 'Rumah berhasil diperbarui.');
     }
 
     /**
@@ -104,7 +112,6 @@ class HouseController extends Controller
     {
         $house = $this->houseRepository->deleteHouse($houseId);
 
-        return redirect()->route('houses.index', ['project_id' => $house->project_id])
-            ->with('success', 'Rumah berhasil dihapus.');
+        return redirect()->back()->with('success', 'Rumah berhasil dihapus.');
     }
 }

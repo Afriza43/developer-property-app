@@ -14,9 +14,7 @@
     <section class="section">
         <div class="row" id="table-bordered">
             <div class="col-12">
-                <div class="card">
-                    {{ $slot }}
-                </div>
+                {{ $slot }}
             </div>
         </div>
     </section>

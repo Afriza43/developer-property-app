@@ -1,19 +1,24 @@
 <?php
 
+use App\Models\ProjectType;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\RABController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\HouseController;
+use App\Http\Controllers\SubJobController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\EquipmentController;
 use App\Http\Controllers\JobDetailController;
+use App\Http\Controllers\UnitReportController;
 use App\Http\Controllers\VolumeItemController;
 use App\Http\Controllers\JobEmployeeController;
 use App\Http\Controllers\JobMaterialController;
+use App\Http\Controllers\ProjectTypeController;
 use App\Http\Controllers\JobEquipmentController;
 use App\Http\Controllers\ExpenseReportController;
 use App\Http\Controllers\ProgressReportController;
@@ -31,18 +36,9 @@ Route::resource('employees', EmployeeController::class);
 Route::resource('equipments', EquipmentController::class);
 Route::resource('materials', MaterialController::class);
 Route::resource('jobs', JobController::class);
-// Route::resource('volume', VolumeItemController::class);
+Route::resource('unit_reports', UnitReportController::class);
+Route::resource('project-types', ProjectTypeController::class);
 
-
-// Route::prefix('jobs/{job}')->group(function () {
-//     Route::get('detail', [JobDetailController::class, 'priceAnalysis'])->name('jobs.priceAnalysis');
-//     Route::post('add-material', [JobDetailController::class, 'addMaterial'])->name('jobs.addMaterial');
-//     Route::post('add-equipment', [JobDetailController::class, 'addEquipment'])->name('jobs.addEquipment');
-//     Route::post('add-employee', [JobDetailController::class, 'addEmployee'])->name('jobs.addEmployee');
-//     Route::patch('update-material/{material}', [JobDetailController::class, 'updateMaterial'])->name('jobs.updateMaterial');
-//     Route::patch('update-equipment/{equipment}', [JobDetailController::class, 'updateEquipment'])->name('jobs.updateEquipment');
-//     Route::patch('update-employee/{employee}', [JobDetailController::class, 'updateEmployee'])->name('jobs.updateEmployee');
-// });
 
 Route::prefix('jobs/{job_id}')->group(function () {
     Route::get('detail', [JobDetailController::class, 'priceAnalysis'])->name('jobs.priceAnalysis');
@@ -67,6 +63,24 @@ Route::prefix('jobs/{job_id}')->group(function () {
     Route::put('employees/{employee_id}', [JobEmployeeController::class, 'updateSingle'])->name('job-employees.updateSingle');
 });
 
+Route::prefix('jobs/{job}/volume')->group(function () {
+    Route::get('/', [VolumeItemController::class, 'index'])->name('volume.index');
+    Route::post('/', [VolumeItemController::class, 'store'])->name('volume.store');
+    Route::delete('/{volume}', [VolumeItemController::class, 'destroy'])->name('volume.destroy');
+    Route::put('/{volume}', [VolumeItemController::class, 'update'])->name('volume.update');
+});
+
+// Job Category
+Route::get('categories/select/{type_id}', [CategoryController::class, 'selectJobCategory'])->name('categories.selectJobCategory');
+Route::post('categories/select/{type_id}', [CategoryController::class, 'storeSelectedJobCategory'])->name('categories.storeSelectedJobCategory');
+Route::delete('categories/select/{typeId}/{categoryId}', [CategoryController::class, 'destroySelectedJobCategory'])->name('categories.destroySelectedJobCategory');
+
+// Job
+Route::get('jobs/select/{categoryId}', [SubJobController::class, 'selectJob'])->name('jobs.selectJob');
+Route::post('jobs/select/{categoryId}', [SubJobController::class, 'storeSelectedJob'])->name('jobs.storeSelectedJob');
+Route::delete('jobs/select/{categoryId}/{jobId}', [SubJobController::class, 'destroySelectedJob'])->name('jobs.destroySelectedJob');
+
+
 // // Alat
 // Route::get('equipments/select', [JobEquipmentController::class, 'select'])->name('job-equipments.select');
 // Route::post('equipments/select', [JobEquipmentController::class, 'storeSelected'])->name('job-equipments.storeSelected');
@@ -78,16 +92,22 @@ Route::prefix('jobs/{job_id}')->group(function () {
 // Route::delete('employees/{employee_id}', [JobEmployeeController::class, 'destroy'])->name('job-employees.destroy');
 // });
 
-Route::prefix('jobs/{job}/volume')->group(function () {
-    Route::get('/', [VolumeItemController::class, 'index'])->name('volume.index');
-    Route::post('/', [VolumeItemController::class, 'store'])->name('volume.store');
-    Route::delete('/{volume}', [VolumeItemController::class, 'destroy'])->name('volume.destroy');
-    Route::put('/{volume}', [VolumeItemController::class, 'update'])->name('volume.update');
-});
-
 // Route::prefix('volume/{job_id}')->group(function () {
 //     Route::get('/', [VolumeItemController::class, 'index'])->name('volume.index');
 //     Route::post('/store', [VolumeItemController::class, 'store'])->name('volume.store');
 //     Route::put('/update/{volume_id}', [VolumeItemController::class, 'update'])->name('volume.update');
 //     Route::delete('/delete/{volume_id}', [VolumeItemController::class, 'destroy'])->name('volume.destroy');
+// });
+
+// Route::resource('volume', VolumeItemController::class);
+
+
+// Route::prefix('jobs/{job}')->group(function () {
+//     Route::get('detail', [JobDetailController::class, 'priceAnalysis'])->name('jobs.priceAnalysis');
+//     Route::post('add-material', [JobDetailController::class, 'addMaterial'])->name('jobs.addMaterial');
+//     Route::post('add-equipment', [JobDetailController::class, 'addEquipment'])->name('jobs.addEquipment');
+//     Route::post('add-employee', [JobDetailController::class, 'addEmployee'])->name('jobs.addEmployee');
+//     Route::patch('update-material/{material}', [JobDetailController::class, 'updateMaterial'])->name('jobs.updateMaterial');
+//     Route::patch('update-equipment/{equipment}', [JobDetailController::class, 'updateEquipment'])->name('jobs.updateEquipment');
+//     Route::patch('update-employee/{employee}', [JobDetailController::class, 'updateEmployee'])->name('jobs.updateEmployee');
 // });

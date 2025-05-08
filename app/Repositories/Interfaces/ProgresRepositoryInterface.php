@@ -9,4 +9,6 @@ interface ProgresRepositoryInterface
     public function getProgressByHouseId($houseId);
     public function getProgressData($id);
     public function createProgres(array $data);
+    public function addProgressPhoto(array $data);
+    public function showProgressPhoto($progressCollection);
 }

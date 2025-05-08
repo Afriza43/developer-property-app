@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('jobs', function (Blueprint $table) {
             $table->id('job_id');
             $table->string('job_name', 30);
-            $table->double('total_volume')->nullable();
             $table->char('satuan_volume', 5)->nullable();
         });
 

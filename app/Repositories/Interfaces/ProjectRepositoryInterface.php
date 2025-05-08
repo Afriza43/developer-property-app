@@ -11,4 +11,11 @@ interface ProjectRepositoryInterface
     public function deleteProject($id);
     public function getHouseByProject($project);
     public function searchAndFilter($search, $location);
+    public function countProject();
+    public function countHouses();
+    public function sumCost();
+    public function countLocation();
+    public function countHousesById($id);
+    public function countBlokById($id);
+    public function countTypeById($id);
 }

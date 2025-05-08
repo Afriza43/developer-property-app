@@ -14,15 +14,38 @@ class JobCategorySeeder extends Seeder
     public function run(): void
     {
         JobCategory::create([
-            'category_name' => 'Pekerjaan Persiapan',
-            'category_cost' => 250000,
-            'house_id' => 1,
+            'category_name' => 'Pekerjaan Persiapan dan Tanah',
         ]);
 
         JobCategory::create([
-            'category_name' => 'Pekerjaan Penyelesaian',
-            'category_cost' => 300000,
-            'house_id' => 1,
+            'category_name' => 'Pekerjaan Pondasi',
+        ]);
+        JobCategory::create([
+            'category_name' => 'Pekerjaan Dinding',
+        ]);
+
+        JobCategory::create([
+            'category_name' => 'Pekerjaan Konstruksi Beton',
+        ]);
+        JobCategory::create([
+            'category_name' => 'Pekerjaan Penutup Atap',
+        ]);
+
+        JobCategory::create([
+            'category_name' => 'Pekerjaan Plafon',
+        ]);
+        JobCategory::create([
+            'category_name' => 'Pekerjaan Instalasi Air',
+        ]);
+        JobCategory::create([
+            'category_name' => 'Pekerjaan Lantai',
+        ]);
+
+        JobCategory::create([
+            'category_name' => 'Pekerjaan Pintu dan Jendela',
+        ]);
+        JobCategory::create([
+            'category_name' => 'Pekerjaan Cat',
         ]);
     }
 }

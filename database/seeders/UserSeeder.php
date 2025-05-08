@@ -28,5 +28,13 @@ class UserSeeder extends Seeder
         ]);
 
         $user->assignRole('teknik');
+
+        $user = User::create([
+            'name' => 'Rahayu',
+            'email' => 'siteadmin@gmail.com',
+            'password' => bcrypt('12345'),
+        ]);
+
+        $user->assignRole('site-admin');
     }
 }

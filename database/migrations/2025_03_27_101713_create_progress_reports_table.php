@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id('progress_reports_id');
             $table->string('description', 50);
             $table->date('report_date');
+            $table->integer('period');
             $table->foreignId('house_id')->references('house_id')->on('houses')->onDelete('cascade');
         });
 

@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('houses', function (Blueprint $table) {
             $table->id('house_id');
-            $table->string('name', 25);
-            $table->char('block_number', length: 2);
+            $table->string('name', 11);
+            $table->string('block', 8);
+            $table->char('number', 2);
             $table->string('type', 8);
             $table->decimal('house_cost', 12)->nullable();
             $table->string('image')->nullable();

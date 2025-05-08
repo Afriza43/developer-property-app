@@ -28,11 +28,18 @@ class ExpenseRepository implements ExpenseRepositoryInterface
     {
         $expenses = $this->getExpensesByHouseId($id);
         $house = $this->getHouse($id);
-        return compact('expenses', 'house');
+        $totalExpenses = $this->sumExpense();
+
+        return compact('expenses', 'house', 'totalExpenses');
     }
 
     public function createExpense(array $data)
     {
         return ExpenseReport::create($data);
+    }
+
+    public function sumExpense()
+    {
+        return ExpenseReport::sum('total_expense');
     }
 }

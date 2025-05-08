@@ -2,32 +2,29 @@
 
 namespace App\Repositories;
 
-use App\Models\Job;
-use App\Models\House;
+use App\Models\ProjectType;
 use App\Models\JobCategory;
 use App\Repositories\Interfaces\RABRepositoryInterface;
 
 class RABRepository implements RABRepositoryInterface
 {
-    public function getHouse($houseId)
+    public function getType($typeId)
     {
-        return House::find($houseId);
+        return ProjectType::with('project')->where('type_id', $typeId)->first();
     }
-    public function getJobCategoriesByHouseId($houseId)
+    public function getJobsByTypeId($typeId)
     {
-        return JobCategory::with('house')->where('house_id', $houseId)->get();
+        $projectType = ProjectType::with('job_categories.jobs')->findOrFail($typeId);
+        return $projectType->job_categories;
     }
-    public function getJobsByHouseId($houseId)
-    {
-        return JobCategory::with('jobs')->where('house_id', $houseId)->get();
-    }
-    public function getRAB($houseId)
-    {
-        $house = $this->getHouse($houseId);
 
-        $jobCategories = $this->getJobsByHouseId($houseId);
+    public function getRAB($typeId)
+    {
+        $type = $this->getType($typeId);
 
-        return compact('house', 'jobCategories');
+        $jobCategories = $this->getJobsByTypeId($typeId);
+
+        return compact('type', 'jobCategories');
     }
     public function getJobCategory($categoryId)
     {

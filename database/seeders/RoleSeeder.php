@@ -22,5 +22,10 @@ class RoleSeeder extends Seeder
             'name' => 'teknik',
             'guard_name' => 'web'
         ]);
+
+        Role::create([
+            'name' => 'site-admin',
+            'guard_name' => 'web'
+        ]);
     }
 }

@@ -47,9 +47,9 @@ class User extends Authenticatable
         ];
     }
 
-    public function houses(): BelongsToMany
+    public function projects(): BelongsToMany
     {
-        return $this->belongsToMany(House::class, 'house_roles', 'user_id', 'house_id');
+        return $this->belongsToMany(Project::class, 'user_access', 'user_id', 'project_id');
     }
 
     public function getKeyName()

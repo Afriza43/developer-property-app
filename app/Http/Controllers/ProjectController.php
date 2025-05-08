@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Project;
-use App\Repositories\ProjectRepository;
 use Illuminate\Http\Request;
+use App\Repositories\ProjectRepository;
+use Illuminate\Support\Facades\Storage;
 
 class ProjectController extends Controller
 {
@@ -23,8 +24,12 @@ class ProjectController extends Controller
         $location = $request->input('location');
 
         $projects = $this->projectRepository->searchAndFilter($search, $location);
+        $countProject = $this->projectRepository->countProject();
+        $countHouses = $this->projectRepository->countHouses();
+        $sumCost = $this->projectRepository->sumCost();
+        $countLocation = $this->projectRepository->countLocation();
 
-        return view('projects.index', compact('projects', 'search', 'location'));
+        return view('projects.index', compact('projects', 'search', 'location', 'countProject', 'countHouses', 'sumCost', 'countLocation'));
     }
 
     /**
@@ -45,8 +50,12 @@ class ProjectController extends Controller
             'location' => 'required',
             'year' => 'required|digits:4|integer',
             'total_cost' => 'nullable',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg|file',
+            'image' => 'image|file|max:5000',
         ]);
+
+        if ($request->file('image')) {
+            $validator['image'] = $request->file('image')->store('project-images');
+        }
 
         $this->projectRepository->createProject($validator);
 
@@ -81,7 +90,23 @@ class ProjectController extends Controller
             'location' => 'required',
             'year' => 'required|digits:4|integer',
             'total_cost' => 'nullable',
+            'image' => 'nullable|image|file|max:5000',
         ]);
+
+        // Cek apakah ada file gambar yang diunggah
+        if ($request->hasFile('image')) {
+            // Hapus gambar lama jika ada
+            $project = $this->projectRepository->getProject($projectId); // Asumsi ada method ini di repository
+            if ($project && $project->image) {
+                Storage::delete($project->image); // Hapus file dari storage
+            }
+
+            // Simpan gambar yang baru diunggah
+            $validator['image'] = $request->file('image')->store('project-images');
+        } else {
+            // Jika tidak ada gambar baru, hapus validasi 'image' dari array validator
+            unset($validator['image']);
+        }
 
         $this->projectRepository->updateProject($projectId, $validator);
 

@@ -19,7 +19,7 @@ class RABController extends Controller
      */
     public function index(Request $request)
     {
-        $data = $this->rabRepository->getRAB($request->house_id);
+        $data = $this->rabRepository->getRAB($request->type_id);
         return view('rab.index', $data);
     }
 
@@ -28,8 +28,8 @@ class RABController extends Controller
      */
     public function create(Request $request)
     {
-        $house = $this->rabRepository->getHouse($request->house_id);
-        return view('rab.create', compact('house'));
+        $type = $this->rabRepository->getType($request->type_id);
+        return view('rab.create', compact('type'));
     }
 
     /**
@@ -40,28 +40,12 @@ class RABController extends Controller
         $data = $request->validate([
             'category_name' => 'required|string|max:50',
             'category_cost' => 'required|numeric',
-            'house_id' => 'required|exists:houses,house_id',
+            'type_id' => 'required|exists:project_types,type_id',
         ]);
 
         $this->rabRepository->createJobCategory($data);
 
         return redirect()->back()->with('success', 'RAB created successfully.');
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(JobCategory $jobCategory)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(JobCategory $jobCategory)
-    {
-        //
     }
 
     /**
@@ -72,7 +56,7 @@ class RABController extends Controller
         $data = $request->validate([
             'category_name' => 'required|string|max:50',
             'category_cost' => 'required|numeric',
-            'house_id' => 'required|exists:houses,house_id',
+            'type_id' => 'required|exists:project_types,type_id',
         ]);
 
         $this->rabRepository->updateJobCategory($categoryId, $data);

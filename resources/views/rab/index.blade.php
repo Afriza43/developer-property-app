@@ -4,7 +4,9 @@
             <div class="row">
                 <div class="col-12 col-md-6 order-md-1 order-last">
                     <h3>RAB</h3>
-                    <p class="text-subtitle text-muted">{{ $house->name }}</p>
+                    <p class="text-subtitle text-muted">{{ $type->name }} -
+                        {{ $type->type }}
+                    </p>
                 </div>
                 <div class="col-12 col-md-6 order-md-2 order-first">
                     <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
@@ -21,49 +23,16 @@
                             <div class="button">
                                 <!-- Tombol untuk membuka modal -->
                                 <div class="buttons">
-                                    <button type="button" class="btn-success btn p-2" data-bs-toggle="modal"
-                                        data-bs-target="#addJobCategory">
-                                        Tambah Kategori
-                                    </button>
-                                </div>
-
-                                <!-- Modal -->
-                                <div class="modal fade" id="addJobCategory" tabindex="-1"
-                                    aria-labelledby="addJobCategoryLabel" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <form method="POST" action="{{ route('rab.store') }}">
-                                            @csrf
-                                            <div class="modal-content">
-                                                <div class="modal-header bg-success text-white">
-                                                    <h5 class="modal-title" id="addJobCategoryLabel">Tambah Kategori
-                                                    </h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                        aria-label="Tutup"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <div class="mb-3">
-                                                        <label for="category_name" class="form-label">Nama
-                                                            Kategori</label>
-                                                        <input type="text" name="category_name" class="form-control"
-                                                            required>
-                                                    </div>
-                                                    <input type="hidden" name="category_cost" value="0">
-                                                    <input type="hidden" name="house_id"
-                                                        value="{{ $house->house_id }}">
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary"
-                                                        data-bs-dismiss="modal">Batal</button>
-                                                    <button type="submit" class="btn btn-success">Simpan</button>
-                                                </div>
-                                            </div>
-                                        </form>
-                                    </div>
+                                    <a href="{{ route('categories.selectJobCategory', $type->type_id) }}">
+                                        <button class="btn-success btn p-2" type="button">
+                                            Tambah Pekerjaan
+                                        </button>
+                                    </a>
                                 </div>
                             </div>
                             <div class="button">
                                 <div class="buttons">
-                                    <a href="{{ route('materials.index', ['house_id' => $house->house_id]) }}">
+                                    <a href="#">
                                         <button class="btn-success btn p-2" type="button">
                                             Daftar Material
                                         </button>
@@ -72,7 +41,7 @@
                             </div>
                             <div class="button">
                                 <div class="buttons">
-                                    <a href="{{ route('equipments.index', ['house_id' => $house->house_id]) }}">
+                                    <a href="#">
                                         <button class="btn-success btn p-2" type="button">
                                             Daftar
                                             Alat
@@ -81,7 +50,7 @@
                             </div>
                             <div class="button">
                                 <div class="buttons">
-                                    <a href="{{ route('employees.index', ['house_id' => $house->house_id]) }}">
+                                    <a href="#">
                                         <button class="btn-success btn p-2" type="button">
                                             Daftar
                                             Pekerja
@@ -98,7 +67,7 @@
                             </div>
 
                         </div>
-                        <div class="card-content">
+                        <div class="card-body">
                             <!-- table bordered -->
                             <div class="table-responsive">
                                 <table class="table table-bordered">
@@ -143,11 +112,11 @@
                                                         data-bs-target="#editCategoryModal-{{ $category->category_id }}">
                                                         <i class="bi bi-pencil-square h5"></i>
                                                     </button>
-                                                    <button style="color: green" type="button" class="btn p-0"
-                                                        data-bs-toggle="modal"
-                                                        data-bs-target="#addJobModal-{{ $category->category_id }}">
-                                                        <i class="bi bi-plus-square-fill h5"></i>
-                                                    </button>
+                                                    <a href="{{ route('jobs.selectJob', $category->category_id) }}">
+                                                        <button style="color: green" type="button" class="btn p-0">
+                                                            <i class="bi bi-plus-square-fill h5"></i>
+                                                        </button>
+                                                    </a>
                                                 </td>
                                             </tr>
 
@@ -158,7 +127,8 @@
                                                     <td class="text-center">{{ $job->total_volume }}</td>
                                                     <td class="text-center">{{ $job->satuan_volume }}</td>
                                                     <td class="text-end">
-                                                        Rp {{ number_format($job->total_cost, 0, ',', '.') }}</td>
+                                                        Rp {{ number_format($job->pivot->total_cost, 0, ',', '.') }}
+                                                    </td>
                                                     <td class="text-end">
                                                         Rp
                                                         {{ number_format($job->total_volume * $job->total_cost, 0, ',', '.') }}
@@ -178,8 +148,7 @@
                                                                         href="{{ route('volume.index', $job->job_id) }}">Edit
                                                                         Volume</a></li>
                                                                 <li>
-                                                                    <button class="dropdown-item"
-                                                                        data-bs-toggle="modal"
+                                                                    <button class="dropdown-item" data-bs-toggle="modal"
                                                                         data-bs-target="#editJobModal-{{ $job->job_id }}">Edit
                                                                         Pekerjaan
                                                                     </button>
@@ -300,7 +269,7 @@
                                                 </div>
                                             </div>
                                             <!-- Modal Edit Job Kategori -->
-                                            <div class="modal fade"
+                                            {{-- <div class="modal fade"
                                                 id="editCategoryModal-{{ $category->category_id }}" tabindex="-1"
                                                 aria-labelledby="editCategoryModal-{{ $category->category_id }}"
                                                 aria-hidden="true">
@@ -342,12 +311,12 @@
                                                         </div>
                                                     </form>
                                                 </div>
-                                            </div>
+                                            </div> --}}
                                         @endforeach
                                         @php
                                             $totalHarga = $jobCategories->sum(function ($category) {
                                                 return collect($category->jobs)->sum(function ($job) {
-                                                    return $job->total_volume * $job->total_cost;
+                                                    return $job->total_volume * $job->pivot->total_cost;
                                                 });
                                             });
 
@@ -379,7 +348,7 @@
                                 </table>
                             </div>
                             <div class="text-center my-3">
-                                <a href="{{ route('houses.index', ['project_id' => $house->project->project_id]) }}"
+                                <a href="{{ route('project-types.index', ['type_id' => $type->type_id]) }}"
                                     class="btn btn-success">Selesai</a>
                             </div>
                         </div>
@@ -389,3 +358,36 @@
         </section>
     </div>
 </x-layout-rab>
+
+
+{{-- <!-- Modal -->
+<div class="modal fade" id="addJobCategory" tabindex="-1"
+aria-labelledby="addJobCategoryLabel" aria-hidden="true">
+<div class="modal-dialog">
+    <form method="POST" action="{{ route('rab.store') }}">
+        @csrf
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="addJobCategoryLabel">Tambah Kategori
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                    aria-label="Tutup"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="category_name" class="form-label">Nama
+                        Kategori</label>
+                    <input type="text" name="category_name" class="form-control"
+                        required>
+                </div>
+                <input type="hidden" name="category_cost" value="0">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary"
+                    data-bs-dismiss="modal">Batal</button>
+                <button type="submit" class="btn btn-success">Simpan</button>
+            </div>
+        </div>
+    </form>
+</div>
+</div> --}}

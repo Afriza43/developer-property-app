@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Repositories\JobRepository;
 use App\Repositories\RABRepository;
 use App\Repositories\HouseRepository;
 use App\Repositories\VolumeRepository;
@@ -13,7 +14,7 @@ use App\Repositories\EmployeeRepository;
 use App\Repositories\MaterialRepository;
 use App\Repositories\EquipmentRepository;
 use App\Repositories\JobDetailRepository;
-use App\Repositories\JobRepository;
+use App\Repositories\ProjectTypeRepository;
 use App\Repositories\Interfaces\JobRepositoryInterface;
 use App\Repositories\Interfaces\RABRepositoryInterface;
 use App\Repositories\Interfaces\HouseRepositoryInterface;
@@ -25,6 +26,7 @@ use App\Repositories\Interfaces\EmployeeRepositoryInterface;
 use App\Repositories\Interfaces\MaterialRepositoryInterface;
 use App\Repositories\Interfaces\EquipmentRepositoryInterface;
 use App\Repositories\Interfaces\JobDetailRepositoryInterface;
+use App\Repositories\Interfaces\ProjectTypeRepositoryInterface;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -44,6 +46,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(EmployeeRepositoryInterface::class, EmployeeRepository::class);
         $this->app->bind(VolumeRepositoryInterface::class, VolumeRepository::class);
         $this->app->bind(JobRepositoryInterface::class, JobRepository::class);
+        $this->app->bind(ProjectTypeRepositoryInterface::class, ProjectTypeRepository::class);
     }
 
     /**

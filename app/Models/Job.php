@@ -16,7 +16,7 @@ class Job extends Model
 
     public function job_categories(): BelongsToMany
     {
-        return $this->belongsToMany(Job::class, 'sub_jobs', 'job_id', 'category_id')->withPivot('job_cost');
+        return $this->belongsToMany(Job::class, 'sub_jobs', 'job_id', 'category_id')->withPivot('job_cost', 'total_volume');
     }
 
     public function equipments(): BelongsToMany

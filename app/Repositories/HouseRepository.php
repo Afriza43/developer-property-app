@@ -5,6 +5,9 @@ namespace App\Repositories;
 use App\Models\User;
 use App\Models\House;
 use App\Models\Project;
+use App\Models\ExpenseReport;
+use App\Models\ProgressPhoto;
+use App\Models\ProgressReport;
 use Illuminate\Support\Facades\Storage;
 use App\Repositories\Interfaces\HouseRepositoryInterface;
 
@@ -15,27 +18,46 @@ class HouseRepository implements HouseRepositoryInterface
         return House::findOrFail($id);
     }
 
-    public function getUser()
-    {
-        return User::all();
-    }
-
     public function getProject($id)
     {
-        return Project::where('project_id', $id)->first();
+        $project = Project::with('project_types')->where('project_id', $id)->first();
+        return $project;
+    }
+
+    public function countHouses($projectId)
+    {
+        $countHouses = House::where('project_id', $projectId)->count();
+        return $countHouses;
+    }
+    public function countBlok($projectId)
+    {
+        $countBlok = House::where('project_id', $projectId)->distinct('block')->count('block');
+        return $countBlok;
+    }
+    public function countType($projectId)
+    {
+        $countType = House::where('project_id', $projectId)->distinct('type')->count('type');
+        return $countType;
     }
 
     public function getHouseById($id)
     {
-        return House::with('project')->where('project_id', $id)->get();
+        return House::with(['project', 'expense_reports'])->where('project_id', $id)->get()->map(function ($house) {
+            $house->house_cost = $house->expense_reports->sum('total_expense');
+            $house->save();
+            return $house;
+        });
     }
 
     public function getHousesData($projectId)
     {
         $houses = $this->getHouseById($projectId);
         $project = $this->getProject($projectId);
+        $countHouses = $this->countHouses($projectId);
+        $countBlok = $this->countBlok($projectId);
+        $countType = $this->countType($projectId);
 
-        return compact('houses', 'project');
+        return compact('houses', 'project', 'countHouses', 'countBlok', 'countType');
     }
 
 
@@ -66,13 +88,24 @@ class HouseRepository implements HouseRepositoryInterface
         $house->delete();
         return $house;
     }
-    public function viewHouse($house)
+
+    public function getProgressReports($id)
     {
-        return $house->load('project');
+        $progressReports = ProgressReport::where('house_id', $id)->get();
+        return $progressReports;
     }
 
-    public function searchByName(string $name)
+    public function getExpenseReports($id)
     {
-        return House::where('name', 'like', '%' . $name . '%')->get();
+        $expenseReports = ExpenseReport::where('house_id', $id)->get();
+        return $expenseReports;
+    }
+
+    public function showProgressPhoto($progressReports)
+    {
+        $progressIds = $progressReports->pluck('progress_reports_id');
+        $photos = ProgressPhoto::whereIn('progress_reports_id', $progressIds)->get()->groupBy('progress_reports_id');
+
+        return $photos;
     }
 }
