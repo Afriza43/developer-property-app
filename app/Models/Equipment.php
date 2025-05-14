@@ -12,9 +12,9 @@ class Equipment extends Model
     public $primaryKey = 'equipment_id';
     public $table = 'equipments';
 
-    public function jobs(): BelongsToMany
+    public function sub_jobs()
     {
-        return $this->belongsToMany(Job::class, 'job_has_equipments', 'equipment_id', 'job_id')
-            ->withPivot('koefisien', 'total_cost', 'equipment_cost');
+        return $this->belongsToMany(SubJob::class, 'job_has_equipments', 'equipment_id', 'sub_job_id')
+            ->withPivot(['koefisien', 'equipment_cost', 'total_cost']);
     }
 }

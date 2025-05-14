@@ -16,8 +16,8 @@ class VolumeItemController extends Controller
 
     public function index($job_id)
     {
-        $job = $this->volumeRepository->getJob($job_id);
-        $volumes = $this->volumeRepository->getByJobId($job_id);
+        $job = $this->volumeRepository->getSubJob($job_id);
+        $volumes = $this->volumeRepository->getBySubJobId($job_id);
         $totalVolume = $this->volumeRepository->calculateTotalVolume($job_id);
 
         return view('volume.index', compact('job', 'volumes', 'totalVolume'));

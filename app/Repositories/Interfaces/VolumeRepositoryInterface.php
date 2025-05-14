@@ -6,8 +6,8 @@ use Illuminate\Http\Request;
 
 interface VolumeRepositoryInterface
 {
-    public function getJob($jobId);
-    public function getByJobId($jobId);
+    public function getSubJob($subJobId);
+    public function getBySubJobId($subJobId);
     public function calculateTotalVolume($jobId);
     public function store(Request $request, $jobId);
     public function update(Request $request, $jobId, $volumeId);

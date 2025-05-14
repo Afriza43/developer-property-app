@@ -6,8 +6,8 @@
                     <div class="col-md-2 d-flex">
                         <div class="button">
                             <div class="buttons">
-                                <a href="#" class="btn btn-success">Tambah
-                                    Pekerjaan</a>
+                                <button class="btn btn-success" data-bs-toggle="modal"
+                                    data-bs-target="#addJobCategoryModal">Tambah Pekerjaan</button>
                             </div>
                         </div>
                     </div>
@@ -38,12 +38,13 @@
                         <div class="card-body bg-primary text-white">
                             Pilih Kategori Pekerjaan
                         </div>
-                        <div class="card-body table-responsive">
+                        <div class="card-body table-responsive" style="max-height: 300px; overflow-y: auto">
                             <table class="table table-bordered">
                                 <thead class="text-center">
                                     <tr>
                                         <th>Pilih</th>
                                         <th>Nama Kategori</th>
+                                        <th>Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -54,7 +55,50 @@
                                                     value="{{ $category->category_id }}">
                                             </td>
                                             <td>{{ $category->category_name }}</td>
+                                            <td class="text-center">
+                                                <button style="color: orange" type="button" class="btn p-0"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#editCategoryModal-{{ $category->category_id }}">
+                                                    <i class="bi bi-pencil-square"></i>
+                                                </button>
+                                            </td>
                                         </tr>
+
+                                        <div class="modal fade" id="editCategoryModal-{{ $category->category_id }}"
+                                            tabindex="-1" aria-labelledby="editCategoryModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <form
+                                                    action="{{ route('categories.updateJobCategory', $category->category_id) }}"
+                                                    method="POST" enctype="multipart/form-data">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="editCategoryModalLabel">Edit
+                                                                Pekerjaan</h5>
+                                                            </h5>
+                                                            <button type="button" class="btn-close"
+                                                                data-bs-dismiss="modal" aria-label="Tutup"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div class="mb-3">
+                                                                <label for="category_name" class="form-label">Nama
+                                                                    Pekerjaan</label>
+                                                                <input type="text" class="form-control"
+                                                                    id="category_name" name="category_name"
+                                                                    value="{{ $category->category_name }}" required>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="submit"
+                                                                class="btn btn-success">Simpan</button>
+                                                            <button type="button" class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">Batal</button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
                                     @empty
                                         <tr>
                                             <td colspan="2" class="text-center">Tidak ada kategori tersedia.</td>
@@ -62,11 +106,11 @@
                                     @endforelse
                                 </tbody>
                             </table>
-                            <div class="d-flex justify-content-center gap-3 mt-3">
-                                <a href="{{ route('rab.index', ['type_id' => $projectType->type_id]) }}"
-                                    class="btn btn-secondary">Kembali</a>
-                                <button type="submit" class="btn btn-primary">Simpan</button>
-                            </div>
+                        </div>
+                        <div class="d-flex justify-content-center gap-3 my-4">
+                            <a href="{{ route('rab.index', ['type_id' => $projectType->type_id]) }}"
+                                class="btn btn-secondary">Kembali</a>
+                            <button type="submit" class="btn btn-primary">Simpan</button>
                         </div>
                     </form>
                 </div>
@@ -89,10 +133,10 @@
                             <tbody>
                                 @forelse($selectedCategories as $selected)
                                     <tr>
-                                        <td>{{ $selected->category_name }}</td>
+                                        <td>{{ $selected->job_category->category_name }}</td>
                                         <td class="text-center">
                                             <form
-                                                action="{{ route('categories.destroySelectedJobCategory', [$projectType->type_id, $selected->category_id]) }}"
+                                                action="{{ route('categories.destroySelectedJobCategory', [$projectType->type_id, $selected->job_category->category_id]) }}"
                                                 method="POST"
                                                 onsubmit="return confirm('Yakin ingin menghapus kategori ini?')">
                                                 @csrf
@@ -110,6 +154,35 @@
                         </table>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="addJobCategoryModal" tabindex="-1" aria-labelledby="addJobCategoryModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <form action="{{ route('categories.addJobCategory', $projectType->type_id) }}" method="POST"
+                    enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addJobCategoryModalLabel">Tambah Pekerjaan</h5>
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Tutup"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="category_name" class="form-label">Nama Pekerjaan</label>
+                                <input type="text" class="form-control" id="category_name" name="category_name"
+                                    required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-success">Simpan</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </x-requirement>

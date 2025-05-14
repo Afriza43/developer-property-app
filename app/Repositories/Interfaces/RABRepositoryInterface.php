@@ -11,4 +11,7 @@ interface RABRepositoryInterface
     public function createJobCategory(array $data);
     public function updateJobCategory($id, array $data);
     public function deleteJobCategory($id);
+    public function updateBudgetPlan($typeId, $budgetPlan);
+    public function updatePivotCategoryName($typeId, $categoryId, $newName);
+    public function getPivotCategoryName($typeId, $categoryId);
 }

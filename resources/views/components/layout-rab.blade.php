@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="{{ asset('dist/assets/compiled/css/iconly.css') }}" />
     <!-- untuk tempat sisipkan script css -->
     @stack('costum-css')
+    @stack('scripts')
     {{-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous"> --}}
 </head>
@@ -49,9 +50,32 @@
     <!-- Need: Apexcharts -->
     <script src="{{ asset('dist/assets/extensions/apexcharts/apexcharts.min.js') }}"></script>
     <script src="{{ asset('dist/assets/static/js/pages/dashboard.js') }}"></script>
+
+    @push('scripts')
+        <script src="{{ asset('dist/assets/extensions/jquery/jquery.min.js') }}"></script>
+        <script src="{{ asset('dist/assets/extensions/jquery/jquery.mask.min.js') }}"></script>
+
+        <script>
+            $(document).ready(function() {
+                // Format semua input dengan class equipment-cost-input
+                $('.equipment-cost-input').mask('000.000.000', {
+                    reverse: true
+                });
+
+                // Saat form disubmit, salin value yang sudah dibersihkan ke input hidden
+                $('form').on('submit', function() {
+                    $(this).find('.wage-input').each(function() {
+                        const formatted = $(this).val();
+                        const cleaned = formatted.replace(/\./g, '');
+                        const hiddenInputId = $(this).attr('id').replace('format', 'asli');
+                        $('#' + hiddenInputId).val(cleaned);
+                    });
+                });
+            });
+        </script>
+    @endpush
     <!-- untuk tempat sisipkan script javascript -->
     @stack('costum-script')
-    @stack('scripts')
 </body>
 
 </html>

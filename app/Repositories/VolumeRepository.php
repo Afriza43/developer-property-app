@@ -3,47 +3,54 @@
 namespace App\Repositories;
 
 use App\Models\Job;
+use App\Models\SubJob;
 use App\Models\VolumeItem;
+use App\Models\JobCategory;
 use Illuminate\Http\Request;
 use App\Repositories\Interfaces\VolumeRepositoryInterface;
 
 class VolumeRepository implements VolumeRepositoryInterface
 {
-    public function getJob($jobId)
+    public function getSubJob($subJobId)
     {
-        return Job::findOrFail($jobId);
+        return SubJob::with(['job', 'job_type'])->findOrFail($subJobId);
     }
 
-    public function getByJobId($jobId)
+    public function getBySubJobId($subJobId)
     {
-        return VolumeItem::where('job_id', $jobId)->get();
+        return VolumeItem::where('sub_job_id', $subJobId)->get();
     }
 
-    public function calculateTotalVolume($jobId)
+    public function calculateTotalVolume($subJobId)
     {
-        return VolumeItem::where('job_id', $jobId)
+        return VolumeItem::where('sub_job_id', $subJobId)
             ->get()
             ->sum(function ($item) {
                 return $item->volume_per_unit * $item->amount;
             });
     }
-    public function store(Request $request, $jobId)
+
+    public function store(Request $request, $subJobId)
     {
         $length = $request->input('length', 0);
         $width = $request->input('width', 0);
         $height = $request->input('height', 0);
         $wide = $request->input('wide', 0);
 
-        $volumePerUnit = 0;
+
         if ($length > 0 && $width > 0 && $height > 0) {
             $volumePerUnit = $length * $width * $height;
             $wide = $length * $width;
         } elseif ($wide > 0 && $height > 0) {
             $volumePerUnit = $wide * $height;
+        } elseif ($request->input('volume_per_unit', 0) > 0) {
+            $volumePerUnit = $request->input('volume_per_unit', 0);
+        } else {
+            $volumePerUnit = 0;
         }
 
         VolumeItem::create([
-            'job_id' => $jobId,
+            'sub_job_id' => $subJobId,
             'description' => $request->description,
             'amount' => $request->amount,
             'length' => $length,
@@ -53,11 +60,15 @@ class VolumeRepository implements VolumeRepositoryInterface
             'volume_per_unit' => $volumePerUnit,
         ]);
 
-        $totalVolume = $this->calculateTotalVolume($jobId);
-        Job::where('job_id', $jobId)->update(['total_volume' => $totalVolume]);
+        $totalVolume = $this->calculateTotalVolume($subJobId);
+
+        // Update total_volume pada tabel sub_jobs
+        SubJob::where('sub_job_id', $subJobId)->update([
+            'total_volume' => $totalVolume,
+        ]);
     }
 
-    public function update(Request $request, $jobId, $volumeId)
+    public function update(Request $request, $subJobId, $volumeId)
     {
         $length = $request->input('length', 0);
         $width = $request->input('width', 0);
@@ -87,18 +98,23 @@ class VolumeRepository implements VolumeRepositoryInterface
             'volume_per_unit' => $volumePerUnit,
         ]);
 
-        // Recalculate total volume after update
-        $totalVolume = $this->calculateTotalVolume($jobId);
-        Job::where('job_id', $jobId)->update(['total_volume' => $totalVolume]);
+        $totalVolume = $this->calculateTotalVolume($subJobId);
+
+        SubJob::where('sub_job_id', $subJobId)->update([
+            'total_volume' => $totalVolume,
+        ]);
     }
 
-    public function delete($id)
+    public function delete($volumeItemId)
     {
-        $volumeItem = VolumeItem::findOrFail($id);
-        $jobId = $volumeItem->job_id;
+        $volumeItem = VolumeItem::findOrFail($volumeItemId);
+        $subJobId = $volumeItem->sub_job_id;
         $volumeItem->delete();
 
-        $totalVolume = $this->calculateTotalVolume($jobId);
-        Job::where('job_id', $jobId)->update(['total_volume' => $totalVolume]);
+        $totalVolume = $this->calculateTotalVolume($subJobId);
+
+        SubJob::where('sub_job_id', $subJobId)->update([
+            'total_volume' => $totalVolume,
+        ]);
     }
 }

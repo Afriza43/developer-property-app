@@ -3,23 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Models\Job;
+use App\Models\SubJob;
 use App\Models\Material;
 use Illuminate\Http\Request;
-use App\Repositories\JobDetailRepository;
+use App\Repositories\SubJobDetailRepository;
 
 class JobMaterialController extends Controller
 {
     protected $repo;
 
-    public function __construct(JobDetailRepository $repo)
+    public function __construct(SubJobDetailRepository $repo)
     {
         $this->repo = $repo;
     }
 
     // Halaman untuk memilih material yang akan ditambahkan
-    public function select(Request $request, $job_id)
+    public function select(Request $request, $subJobId)
     {
-        $job = $this->repo->getJob($job_id);
+        $subJob = $this->repo->getJob($subJobId);
 
         $query = Material::query();
 
@@ -28,51 +29,52 @@ class JobMaterialController extends Controller
         }
 
         $materials = $query->get();
+        session(['redirect_after_material' => request()->fullUrl()]);
 
-        return view('unit-prices.job-materials', compact('job', 'materials'));
+        return view('unit-prices.job-materials', compact('subJob', 'materials'));
     }
 
 
     // Menyimpan banyak material terpilih ke pivot
-    public function storeSelected(Request $request, $job_id)
+    public function storeSelected(Request $request, $subJobId)
     {
         $request->validate([
             'materials' => 'required|array',
             'materials.*' => 'exists:materials,material_id'
         ]);
 
-        $job = $this->repo->getJob($job_id);
+        $subJob = $this->repo->getJob($subJobId);
 
         foreach ($request->materials as $materialId) {
-            $this->repo->addMaterial($job, $materialId);
+            $this->repo->addMaterial($subJob, $materialId);
         }
 
-        return redirect()->route('jobs.priceAnalysis', $job_id)
+        return redirect()->route('jobs.priceAnalysis', $subJobId)
             ->with('success', 'Material berhasil ditambahkan.');
     }
 
-    public function updateSingle(Request $request, $jobId, $materialId)
+    public function updateSingle(Request $request, $subJobId, $materialId)
     {
-        $job = Job::findOrFail($jobId);
+        $subJob = SubJob::findOrFail($subJobId);
         $material = Material::findOrFail($materialId);
 
         $koefisien = floatval($request->input('koefisien'));
-        $totalCost = $koefisien * $material->material_cost;
+        $materialCost = floatval($request->input('material_cost'));
+        $totalCost = $koefisien * $materialCost;
 
-        $job->materials()->updateExistingPivot($materialId, [
+        $subJob->materials()->updateExistingPivot($materialId, [
             'koefisien' => $koefisien,
+            'material_cost' => $materialCost,
             'total_cost' => $totalCost,
         ]);
 
         return redirect()->back()->with('success', 'Data material berhasil diperbarui.');
     }
 
-    public function destroy($jobId, $materialId)
+    public function destroy($subJobId, $materialId)
     {
-        $job = Job::findOrFail($jobId);
-        $material = Material::findOrFail($materialId);
-
-        $job->materials()->detach($materialId);
+        $subJob = SubJob::findOrFail($subJobId);
+        $subJob->materials()->detach($materialId);
 
         return redirect()->back()->with('success', 'Material berhasil dihapus.');
     }

@@ -21,7 +21,7 @@ return new class extends Migration
             $table->id();
             $table->double('koefisien');
             $table->decimal('total_cost', 10);
-            $table->foreignId('job_id')->references('job_id')->on('jobs')->onDelete('cascade');
+            $table->foreignId('sub_job_id')->references('sub_job_id')->on('sub_jobs')->onDelete('cascade');
             $table->foreignId('employee_id')->references('employee_id')->on('employees')->onDelete('cascade');
             $table->decimal('wage', 10);
         });

@@ -1,67 +1,66 @@
 <x-layout-rab title="Daftar Pekerja">
     <x-requirement pageName="Daftar Pekerja">
-        <div class="card-header d-flex flex-wrap gap-2">
-            <div class="button">
-                <div class="buttons">
-                    <a href="{{ route('employees.create') }}" class="btn btn-success">Tambah Pekerja</a>
+        <div class="card mt-2">
+            <div class="card-header d-flex flex-wrap gap-2">
+                <div class="button">
+                    <div class="buttons">
+                        <a
+                            href="{{ route('employees.index', ['set_redirect' => 1, 'sub_job_id' => $subJob->sub_job_id]) }}">
+                            <button class="btn btn-primary">Tambah Pegawai</button>
+                        </a>
+                    </div>
+                </div>
+                {{-- Search Bar --}}
+                <div class="col-md-10">
+                    <form action="{{ route('job-employees.select', $subJob->sub_job_id) }}" method="GET">
+                        <div class="input-group mb-3">
+                            <input type="text" name="search" class="form-control" placeholder="Cari Pekerja..."
+                                aria-label="Cari Pekerja..." value="{{ request('search') }}">
+                            <button class="btn btn-outline-secondary" type="submit" id="button-search-employee">
+                                <i class="bi bi-search h5"></i>
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
-            {{-- Search Bar --}}
-            <div class="col-md-10">
-                <form action="{{ route('job-employees.select', $job->job_id) }}" method="GET">
-                    <div class="input-group mb-3">
-                        <input type="text" name="search" class="form-control" placeholder="Cari pekerja..."
-                            aria-label="Cari pekerja..." value="{{ request('search') }}">
-                        <button class="btn btn-outline-secondary" type="submit" id="button-search-employee">
-                            <i class="bi bi-search h5"></i>
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-        <div class="card-content">
-            <div class="table-responsive">
-                @if ($employees->isNotEmpty())
-                    <form action="{{ route('job-employees.storeSelected', $job->job_id) }}" method="POST">
+            <div class="card-body">
+                <div class="card-content">
+                    <form action="{{ route('job-employees.storeSelected', $subJob->sub_job_id) }}" method="POST">
                         @csrf
-                        <table class="table table-bordered">
-                            <thead class="text-center">
-                                <tr>
-                                    <th scope="col">Pilih</th>
-                                    <th scope="col">Nama Pekerja</th>
-                                    <th scope="col">Satuan</th>
-                                    <th scope="col">Harga</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($employees as $employee)
+                        <div class="table-responsive" style="max-height: 400px; overflow-y: auto">
+                            <table class="table table-bordered">
+                                <thead class="text-center">
                                     <tr>
-                                        <td class="text-center align-middle">
-                                            <input type="checkbox" name="employees[]"
-                                                value="{{ $employee->employee_id }}" style="transform: scale(1.5);">
-                                        </td>
-                                        <td>{{ $employee->position }}</td>
-                                        <td class="text-center">{{ $employee->employee_unit }}</td>
-                                        <td class="text-end">Rp
-                                            {{ number_format($employee->wage, 0, ',', '.') }}
-                                        </td>
+                                        <th scope="col">Pilih</th>
+                                        <th scope="col">Posisi</th>
+                                        <th scope="col">Satuan</th>
                                     </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-
+                                </thead>
+                                <tbody>
+                                    @forelse($employees as $employee)
+                                        <tr>
+                                            <td class="text-center align-middle">
+                                                <input type="checkbox" name="employees[]"
+                                                    value="{{ $employee->employee_id }}" style="transform: scale(1.5);">
+                                            </td>
+                                            <td>{{ $employee->position }}</td>
+                                            <td class="text-center">{{ $employee->unit }}</td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="5" class="text-center">Tidak ada pekerja ditemukan.</td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
                         <div class="d-flex justify-content-center gap-3 my-3">
-                            <a href="{{ route('jobs.priceAnalysis', $job->job_id) }}"
+                            <a href="{{ route('jobs.priceAnalysis', $subJob->sub_job_id) }}"
                                 class="btn btn-secondary">Kembali</a>
                             <button type="submit" class="btn btn-primary">Selesai</button>
                         </div>
                     </form>
-                @else
-                    <div class="text-center my-3">
-                        <p class="text-muted">Pekerja Belum Terisi</p>
-                        <a href="{{ route('employees.create') }}" class="btn btn-success">Tambah Pekerja</a>
-                    </div>
-                @endif
+                </div>
             </div>
         </div>
     </x-requirement>

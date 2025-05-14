@@ -129,6 +129,12 @@
         </section>
     </div>
 
+    <div class="d-flex justify-content-center mt-2 mb-5">
+        <a href="{{ route('projects.index') }}">
+            <button type="submit" class="btn btn-success">Selesai</button>
+        </a>
+    </div>
+
     {{-- Modal Tambah Tipe --}}
     <div class="modal fade" id="addTypeModal" tabindex="-1" aria-labelledby="addTypeModalLabel"
         aria-hidden="true">

@@ -1,183 +1,122 @@
-<x-layout-rab title="Daftar Karyawan">
-    <x-requirement pageName="Daftar Karyawan">
-        <div class="card-header">
-            <div class="buttons">
-                <!-- Tombol untuk membuka modal tambah karyawan -->
-                <button type="button" class="btn-success btn p-2" data-bs-toggle="modal" data-bs-target="#addEmployee">
-                    Tambah Karyawan
-                </button>
-                <a href="{{ route('rab.index', ['house_id' => request()->house_id]) }}">
-                    <button type="button" class="btn-danger btn p-2">
-                        Kembali
-                    </button>
-                </a>
+<x-layout-rab title="Daftar Pekerja">
+    <x-requirement pageName="Daftar Pekerja - Master">
+        <div class="card mt-2">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-12 d-flex justify-content-between">
+                        <h3 class="card-title">Tambah Pekerja</h3>
+                        <a href="{{ route('job-employees.select', session('redirect_sub_job_id')) }}">
+                            <button class="btn btn-secondary">Kembali</button>
+                        </a>
+                    </div>
+                </div>
+                <hr>
             </div>
-
-            <!-- Modal Tambah Karyawan -->
-            <div class="modal fade" id="addEmployee" tabindex="-1" aria-labelledby="addEmployeeLabel"
-                aria-hidden="true">
-                <div class="modal-dialog">
-                    <form method="POST" action="{{ route('employees.store') }}">
-                        @csrf
-                        <div class="modal-content">
-                            <div class="modal-header bg-success text-white">
-                                <h5 class="modal-title" id="addEmployeeLabel">Tambah Karyawan</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Tutup"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="mb-3">
-                                    <label for="position" class="form-label">Posisi</label>
-                                    <input type="text" name="position" class="form-control" maxlength="25" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="unit" class="form-label">Unit</label>
-                                    <input type="text" name="unit" class="form-control" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="wage" class="form-label">Gaji</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text">Rp</span>
-                                        <input type="text" class="form-control" id="uang-format" required
-                                            placeholder="0">
-                                        <input type="hidden" name="wage" id="uang-asli">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                <button type="submit" class="btn btn-success">Simpan</button>
+            <div class="card-body">
+                <form class="form" method="POST" action="{{ route('employees.store') }}">
+                    @csrf
+                    <div class="row">
+                        <div class="col-md-5 col-12">
+                            <div class="form-group">
+                                <label for="position" class="form-label">Posisi</label>
+                                <input type="text" name="position" class="form-control" maxlength="25" required>
                             </div>
                         </div>
-                    </form>
-                </div>
+                        <div class="col-md-2 col-12">
+                            <div class="form-group">
+                                <label for="unit" class="form-label">Satuan</label>
+                                <input type="text" name="unit" class="form-control" maxlength="5" required>
+                            </div>
+                        </div>
+                        <div class="col-12 d-flex justify-content-end mt-3">
+                            <button type="submit" class="btn btn-primary me-1 mb-1">Tambah</button>
+                            <button type="reset" class="btn btn-light-secondary me-1 mb-1">Reset</button>
+                        </div>
+                    </div>
+                </form>
             </div>
-
-            <!-- Tabel Daftar Karyawan -->
-            <div class="card-content">
-                <div class="table-responsive">
-                    <table class="table table-bordered mb-0 text-center">
-                        <thead>
-                            <tr>
-                                <th>Posisi</th>
-                                <th>Unit</th>
-                                <th>Gaji</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($employees as $employee)
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <h3>List Pekerja Bangunan</h3>
+                <div class="card-body">
+                    <div class="table-responsive" style="max-height: 400px; overflow-y: auto">
+                        <table class="table table-bordered mb-0 text-center">
+                            <thead>
                                 <tr>
-                                    <td>{{ $employee->position }}</td>
-                                    <td>{{ $employee->unit }}</td>
-                                    <td>Rp {{ number_format($employee->wage, 0, ',', '.') }}</td>
-                                    <td>
-                                        <!-- Tombol Edit -->
-                                        <button type="button" class="btn btn-warning" data-bs-toggle="modal"
-                                            data-bs-target="#editEmployeeModal{{ $employee->employee_id }}">
-                                            Edit
-                                        </button>
-
-                                        <!-- Form Hapus -->
-                                        <form action="{{ route('employees.destroy', $employee->employee_id) }}"
-                                            method="POST" class="d-inline"
-                                            onsubmit="return confirm('Apakah Anda yakin ingin menghapus pekerja ini?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger">Hapus</button>
-                                        </form>
-                                    </td>
-
-                                    <!-- Modal Edit Karyawan -->
-                                    <div class="modal fade" id="editEmployeeModal{{ $employee->employee_id }}"
-                                        tabindex="-1" aria-labelledby="editEmployeeLabel{{ $employee->employee_id }}"
-                                        aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <form method="POST"
-                                                action="{{ route('employees.update', $employee->employee_id) }}">
+                                    <th>Posisi</th>
+                                    <th>Satuan</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($employees as $employee)
+                                    <tr>
+                                        <td>{{ $employee->position }}</td>
+                                        <td>{{ $employee->unit }}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                                                data-bs-target="#editemployeeModal{{ $employee->employee_id }}">Edit</button>
+                                            <form action="{{ route('employees.destroy', $employee->employee_id) }}"
+                                                method="POST" class="d-inline"
+                                                onsubmit="return confirm('Apakah Anda yakin ingin menghapus employee ini?')">
                                                 @csrf
-                                                @method('PUT')
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
+                                            </form>
+                                        </td>
+
+                                        <!-- Modal Edit -->
+                                        <div class="modal fade" id="editemployeeModal{{ $employee->employee_id }}"
+                                            tabindex="-1"
+                                            aria-labelledby="editemployeeLabel{{ $employee->employee_id }}"
+                                            aria-hidden="true">
+                                            <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <div class="modal-header bg-warning text-white">
                                                         <h5 class="modal-title"
-                                                            id="editEmployeeLabel{{ $employee->employee_id }}">Edit
-                                                            Karyawan
+                                                            id="editemployeeLabel{{ $employee->employee_id }}">Edit
                                                         </h5>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                             aria-label="Tutup"></button>
                                                     </div>
-                                                    <div class="modal-body">
-                                                        <div class="mb-3">
-                                                            <label for="position" class="form-label">Posisi</label>
-                                                            <input type="text" name="position" class="form-control"
-                                                                value="{{ $employee->position }}" maxlength="25"
-                                                                required>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label for="unit" class="form-label">Unit</label>
-                                                            <input type="text" name="unit" class="form-control"
-                                                                value="{{ $employee->unit }}" required>
-                                                        </div>
-                                                        <div class="mb-3">
-                                                            <label for="wage" class="form-label">Gaji</label>
-                                                            <div class="input-group">
-                                                                <span class="input-group-text">Rp</span>
-                                                                <input type="text" class="form-control"
-                                                                    id="uang-format{{ $employee->employee_id }}"
-                                                                    value="{{ number_format($employee->wage, 0, ',', '.') }}">
-                                                                <input type="hidden" name="wage"
-                                                                    id="uang-asli{{ $employee->employee_id }}"
-                                                                    value="{{ $employee->wage }}">
+                                                    <form method="POST" id="editemployeeForm"
+                                                        action="{{ route('employees.update', $employee->employee_id) }}">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <div class="modal-body">
+                                                            <div class="mb-3">
+                                                                <label for="edit_position" class="form-label">Nama
+                                                                    employee</label>
+                                                                <input type="text" name="position"
+                                                                    value="{{ $employee->position }}"
+                                                                    class="form-control" id="edit_position"
+                                                                    maxlength="25" required>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="edit_unit" class="form-label">Satuan</label>
+                                                                <input type="text" name="unit"
+                                                                    value="{{ $employee->unit }}" class="form-control"
+                                                                    id="edit_unit" maxlength="5" required>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary"
-                                                            data-bs-dismiss="modal">Batal</button>
-                                                        <button type="submit" class="btn btn-warning">Simpan
-                                                            Perubahan</button>
-                                                    </div>
-                                                    <script src="{{ asset('dist/assets/extensions/jquery/jquery.min.js') }}"></script>
-                                                    <script src="{{ asset('dist/assets/extensions/jquery/jquery.mask.min.js') }}"></script>
-                                                    <script>
-                                                        $(document).ready(function() {
-                                                            $('#uang-format{{ $employee->employee_id }}').mask('000.000.000', {
-                                                                reverse: true
-                                                            });
-
-                                                            $('form').on('submit', function() {
-                                                                let uangFormatted = $('#uang-format{{ $employee->employee_id }}').val();
-                                                                let uangAsli = uangFormatted.replace(/\./g, '');
-                                                                $('#uang-asli{{ $employee->employee_id }}').val(uangAsli);
-                                                            });
-                                                        });
-                                                    </script>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-danger"
+                                                                data-bs-dismiss="modal">Batal</button>
+                                                            <button type="submit" class="btn btn-warning">Simpan
+                                                                Perubahan</button>
+                                                        </div>
+                                                    </form>
                                                 </div>
-                                            </form>
+                                            </div>
                                         </div>
-                                    </div>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </x-requirement>
-
-    <script src="{{ asset('dist/assets/extensions/jquery/jquery.min.js') }}"></script>
-    <script src="{{ asset('dist/assets/extensions/jquery/jquery.mask.min.js') }}"></script>
-    <script>
-        $(document).ready(function() {
-            $('#uang-format').mask('000.000.000', {
-                reverse: true
-            });
-
-            $('form').on('submit', function() {
-                let uangFormatted = $('#uang-format').val();
-                let uangAsli = uangFormatted.replace(/\./g, '');
-                $('#uang-asli').val(uangAsli);
-            });
-        });
-    </script>
 </x-layout-rab>

@@ -17,9 +17,13 @@ class MaterialController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $materials = $this->materialRepository->getMaterials();
+
+        if ($request->has('set_redirect') && $request->has('sub_job_id')) {
+            session(['redirect_sub_job_id' => $request->query('sub_job_id')]);
+        }
 
         return view('materials.index', compact('materials'));
     }
@@ -41,7 +45,6 @@ class MaterialController extends Controller
             'material_name'   => 'required|string|max:25',
             'description'     => 'required|string|max:50',
             'material_unit'   => 'required',
-            'material_cost'   => 'required|numeric|min:0',
         ]);
 
 
@@ -49,6 +52,7 @@ class MaterialController extends Controller
 
         return redirect()->back()->with('success', 'Material berhasil ditambahkan.');
     }
+
 
     /**
      * Display the specified resource.
@@ -78,7 +82,6 @@ class MaterialController extends Controller
             'material_name'   => 'required|string|max:25',
             'description'     => 'required|string|max:50',
             'material_unit'   => 'required',
-            'material_cost'   => 'required|numeric|min:0',
         ]);
 
         $this->materialRepository->updateMaterial($material->material_id, $data);

@@ -17,11 +17,19 @@ class EmployeeController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $employees = $this->employeeRepository->getEmployees();
+
+        // Hanya simpan sub_job_id agar tombol kembali tahu harus ke mana
+        if ($request->has('set_redirect') && $request->has('sub_job_id')) {
+            session(['redirect_sub_job_id' => $request->query('sub_job_id')]);
+        }
+
         return view('employees.index', compact('employees'));
     }
+
+
 
     /**
      * Show the form for creating a new resource.
@@ -39,7 +47,6 @@ class EmployeeController extends Controller
         $data = $request->validate([
             'position' => 'required|string|max:25',
             'unit'     => 'required',
-            'wage'     => 'required|numeric|min:0',
         ]);
 
         $this->employeeRepository->createEmployee($data);
@@ -73,7 +80,6 @@ class EmployeeController extends Controller
         $data = $request->validate([
             'position' => 'required|string|max:25',
             'unit'     => 'required',
-            'wage'     => 'required|numeric|min:0',
         ]);
 
         $this->employeeRepository->updateEmployee($employee->employee_id, $data);

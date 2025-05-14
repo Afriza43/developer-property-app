@@ -33,7 +33,7 @@
                                 ) }}
                             </div>
                         </div>
-                        <div class="card-content">
+                        <div class="card-body">
                             <div class="table-responsive">
                                 @php
                                     $totalAll = 0;
@@ -46,7 +46,7 @@
                                             <th>Keterangan</th>
                                             <th>Koefisien</th>
                                             <th>Satuan</th>
-                                            <th>Harga Dasar</th>
+                                            <th>Harga Satuan</th>
                                             <th>Harga Total</th>
                                             <th colspan="2">Aksi</th>
                                         </tr>
@@ -57,7 +57,7 @@
                                         <tr class="text-center">
                                             <th colspan="6">Bahan</th>
                                             <th colspan="2">
-                                                <a href="{{ route('job-materials.select', $jobData->job_id) }}">
+                                                <a href="{{ route('job-materials.select', $jobData->sub_job_id) }}">
                                                     <i class="bi bi-plus-square-fill h5 float-center"></i>
                                                 </a>
                                             </th>
@@ -67,7 +67,7 @@
                                         @foreach ($jobData->materials as $material)
                                             <tr id="row-{{ $material->material_id }}">
                                                 <form
-                                                    action="{{ route('job-materials.updateSingle', ['job_id' => $jobData->job_id, 'material_id' => $material->material_id]) }}"
+                                                    action="{{ route('job-materials.updateSingle', ['sub_job_id' => $jobData->sub_job_id, 'material_id' => $material->material_id]) }}"
                                                     method="POST">
                                                     @csrf
                                                     @method('PUT')
@@ -87,8 +87,18 @@
                                                     <td class="text-center">{{ $material->material_unit }}</td>
 
                                                     {{-- Harga dasar --}}
-                                                    <td class="text-end">Rp
-                                                        {{ number_format($material->material_cost, 0, ',', '.') }}</td>
+                                                    <td class="text-end">
+                                                        <span class="material-cost-text">Rp
+                                                            {{ number_format($material->pivot->material_cost, 0, ',', '.') }}
+                                                        </span>
+                                                        <input type="text"
+                                                            class="form-control material-cost-input d-none text-end"
+                                                            id="mcost-format{{ $material->material_id }}"
+                                                            value="{{ number_format($material->pivot->material_cost, 0, ',', '.') }}">
+                                                        <input type="hidden" name="material_cost"
+                                                            value="{{ $material->pivot->material_cost }}"
+                                                            id="mcost-asli{{ $material->material_id }}">
+                                                    </td>
 
                                                     {{-- Harga total --}}
                                                     <td class="text-end harga-total">
@@ -112,7 +122,7 @@
 
                                                 <td class="text-center">
                                                     <form
-                                                        action="{{ route('job-materials.destroy', ['job_id' => $jobData->job_id, 'material_id' => $material->material_id]) }}"
+                                                        action="{{ route('job-materials.destroy', ['sub_job_id' => $jobData->sub_job_id, 'material_id' => $material->material_id]) }}"
                                                         method="POST" onsubmit="return confirm('Hapus bahan ini?')">
                                                         @csrf
                                                         @method('DELETE')
@@ -122,6 +132,22 @@
                                                     </form>
                                                 </td>
                                             </tr>
+                                            <script src="{{ asset('dist/assets/extensions/jquery/jquery.min.js') }}"></script>
+                                            <script src="{{ asset('dist/assets/extensions/jquery/jquery.mask.min.js') }}"></script>
+                                            <script>
+                                                $(document).ready(function() {
+                                                    $('#mcost-format' + {{ $material->material_id }}).mask('000.000.000', {
+                                                        reverse: true
+                                                    });
+
+                                                    $('form').on('submit', function() {
+                                                        let mcostFormatted = $('#mcost-format' +
+                                                            {{ $material->material_id }}).val();
+                                                        let mcostAsli = mcostFormatted.replace(/\./g, '');
+                                                        $('#mcost-asli' + {{ $material->material_id }}).val(mcostAsli);
+                                                    });
+                                                });
+                                            </script>
                                         @endforeach
 
 
@@ -129,7 +155,7 @@
                                         <tr class="text-center">
                                             <th colspan="6">Alat</th>
                                             <th colspan="2">
-                                                <a href="{{ route('job-equipments.select', $jobData->job_id) }}">
+                                                <a href="{{ route('job-equipments.select', $jobData->sub_job_id) }}">
                                                     <i class="bi bi-plus-square-fill h5 float-center"></i>
                                                 </a>
                                             </th>
@@ -139,7 +165,7 @@
                                         @foreach ($jobData->equipments as $equipment)
                                             <tr id="row-{{ $equipment->equipment_id }}">
                                                 <form
-                                                    action="{{ route('job-equipments.updateSingle', ['job_id' => $jobData->job_id, 'equipment_id' => $equipment->equipment_id]) }}"
+                                                    action="{{ route('job-equipments.updateSingle', ['sub_job_id' => $jobData->sub_job_id, 'equipment_id' => $equipment->equipment_id]) }}"
                                                     method="POST">
                                                     @csrf
                                                     @method('PUT')
@@ -159,8 +185,16 @@
                                                     <td class="text-center">{{ $equipment->equipment_unit }}</td>
 
                                                     {{-- Harga dasar --}}
-                                                    <td class="text-end">Rp
-                                                        {{ number_format($equipment->equipment_cost, 0, ',', '.') }}
+                                                    <td class="text-end">
+                                                        <span class="equipment-cost-text">Rp
+                                                            {{ number_format($equipment->pivot->equipment_cost, 0, ',', '.') }}</span>
+                                                        <input type="text"
+                                                            class="form-control equipment-cost-input d-none text-end"
+                                                            id="ecost-format{{ $equipment->equipment_id }}"
+                                                            value="{{ number_format($equipment->pivot->equipment_cost, 0, ',', '.') }}">
+                                                        <input type="hidden" name="equipment_cost"
+                                                            id="ecost-asli{{ $equipment->equipment_id }}"
+                                                            value="{{ $equipment->pivot->equipment_cost }}">
                                                     </td>
 
                                                     {{-- Harga total --}}
@@ -182,7 +216,7 @@
                                                 </form>
                                                 <td class="text-center">
                                                     <form
-                                                        action="{{ route('job-equipments.destroy', ['job_id' => $jobData->job_id, 'equipment_id' => $equipment->equipment_id]) }}"
+                                                        action="{{ route('job-equipments.destroy', ['sub_job_id' => $jobData->sub_job_id, 'equipment_id' => $equipment->equipment_id]) }}"
                                                         method="POST" onsubmit="return confirm('Hapus alat ini?')">
                                                         @csrf
                                                         @method('DELETE')
@@ -192,13 +226,27 @@
                                                     </form>
                                                 </td>
                                             </tr>
+                                            <script>
+                                                $(document).ready(function() {
+                                                    $('#ecost-format' + {{ $equipment->equipment_id }}).mask('000.000.000', {
+                                                        reverse: true
+                                                    });
+
+                                                    $('form').on('submit', function() {
+                                                        let ecostFormatted = $('#ecost-format' +
+                                                            {{ $equipment->equipment_id }}).val();
+                                                        let ecostAsli = ecostFormatted.replace(/\./g, '');
+                                                        $('#ecost-asli' + {{ $equipment->equipment_id }}).val(ecostAsli);
+                                                    });
+                                                });
+                                            </script>
                                         @endforeach
 
                                         {{-- Header PEKERJA --}}
                                         <tr class="text-center">
                                             <th colspan="6">Pekerja</th>
                                             <th colspan="2">
-                                                <a href="{{ route('job-employees.select', $jobData->job_id) }}">
+                                                <a href="{{ route('job-employees.select', $jobData->sub_job_id) }}">
                                                     <i class="bi bi-plus-square-fill h5 float-center"></i>
                                                 </a>
                                             </th>
@@ -208,7 +256,7 @@
                                         @foreach ($jobData->employees as $employee)
                                             <tr id="row-{{ $employee->employee_id }}">
                                                 <form
-                                                    action="{{ route('job-employees.updateSingle', ['job_id' => $jobData->job_id, 'employee_id' => $employee->employee_id]) }}"
+                                                    action="{{ route('job-employees.updateSingle', ['sub_job_id' => $jobData->sub_job_id, 'employee_id' => $employee->employee_id]) }}"
                                                     method="POST">
                                                     @csrf
                                                     @method('PUT')
@@ -229,8 +277,16 @@
                                                     <td class="text-center">{{ $employee->unit }}</td>
 
                                                     {{-- Harga dasar --}}
-                                                    <td class="text-end">Rp
-                                                        {{ number_format($employee->wage, 0, ',', '.') }}
+                                                    <td class="text-end">
+                                                        <span class="wage-text">Rp
+                                                            {{ number_format($employee->pivot->wage, 0, ',', '.') }}</span>
+                                                        <input type="text"
+                                                            class="form-control wage-input d-none text-end"
+                                                            id="wage-format{{ $employee->employee_id }}"
+                                                            value="{{ number_format($employee->pivot->wage, 0, ',', '.') }}">
+                                                        <input type="hidden" name="wage"
+                                                            value="{{ $employee->pivot->wage }}"
+                                                            id="wage-asli{{ $employee->employee_id }}">
                                                     </td>
 
                                                     {{-- Harga total --}}
@@ -250,10 +306,24 @@
                                                             <i class="bi bi-check2"></i>
                                                         </button>
                                                     </td>
+                                                    <script>
+                                                        $(document).ready(function() {
+                                                            $('#wage-format' + {{ $employee->employee_id }}).mask('000.000.000', {
+                                                                reverse: true
+                                                            });
+
+                                                            $('form').on('submit', function() {
+                                                                let wageFormatted = $('#wage-format' +
+                                                                    {{ $employee->employee_id }}).val();
+                                                                let wageAsli = wageFormatted.replace(/\./g, '');
+                                                                $('#wage-asli' + {{ $employee->employee_id }}).val(wageAsli);
+                                                            });
+                                                        });
+                                                    </script>
                                                 </form>
                                                 <td class="text-center">
                                                     <form
-                                                        action="{{ route('job-employees.destroy', ['job_id' => $jobData->job_id, 'employee_id' => $employee->employee_id]) }}"
+                                                        action="{{ route('job-employees.destroy', ['sub_job_id' => $jobData->sub_job_id, 'employee_id' => $employee->employee_id]) }}"
                                                         method="POST"
                                                         onsubmit="return confirm('Hapus pekerja ini?')">
                                                         @csrf
@@ -303,7 +373,7 @@
                                 </table>
                             </div>
                             <div class="text-center my-3">
-                                <a href="{{ route('jobs.updateTotalCost', $jobData->job_id) }}"
+                                <a href="{{ route('jobs.updateTotalCost', $jobData->sub_job_id) }}"
                                     class="btn btn-success">Selesai</a>
                             </div>
                         </div>
@@ -316,25 +386,50 @@
         document.querySelectorAll('.btn-edit').forEach(button => {
             button.addEventListener('click', function() {
                 const row = this.closest('tr');
+
+                // Tampilkan input untuk koefisien
                 row.querySelector('.koefisien-text').classList.add('d-none');
                 row.querySelector('.koefisien-input').classList.remove('d-none');
+
+                // Tampilkan input untuk harga satuan (wage/material/equipment)
+                row.querySelectorAll('.wage-text, .material-cost-text, .equipment-cost-text')
+                    .forEach(el => el.classList.add('d-none'));
+                row.querySelectorAll('.wage-input, .material-cost-input, .equipment-cost-input')
+                    .forEach(el => el.classList.remove('d-none'));
+
+                // Toggle tombol
                 row.querySelector('.btn-edit').classList.add('d-none');
                 row.querySelector('.btn-selesai').classList.remove('d-none');
 
-                // Hitung ulang total saat input berubah
-                const input = row.querySelector('.koefisien-input');
-                input.addEventListener('input', () => {
-                    const unitPrice = parseFloat(
-                        row.children[4].textContent.replace(/[^\d]/g, '')
-                    );
-                    const koefisien = parseFloat(input.value);
-                    const total = unitPrice * koefisien;
+                const koefisienInput = row.querySelector('.koefisien-input');
 
-                    // row.querySelector('.harga-total').textContent = 'Rp ' + new Intl.NumberFormat(
-                    //     'id-ID').format(total || 0);
-                });
+                // Ambil input harga satuan (wage/material/equipment)
+                const unitPriceInput =
+                    row.querySelector('.wage-input') ||
+                    row.querySelector('.material-cost-input') ||
+                    row.querySelector('.equipment-cost-input');
+
+                const totalCell = row.querySelector('.harga-total');
+
+                function parseIndoNumber(input) {
+                    return parseFloat(
+                        input.replace(/\./g, '').replace(',', '.')
+                    );
+                }
+
+                function hitungTotal() {
+                    const koefisien = parseFloat(koefisienInput.value) || 0;
+                    const hargaSatuan = parseIndoNumber(unitPriceInput.value) || 0;
+                    const total = koefisien * hargaSatuan;
+                    totalCell.textContent = 'Rp ' + new Intl.NumberFormat('id-ID', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    }).format(total);
+                }
+
+                koefisienInput.addEventListener('input', hitungTotal);
+                unitPriceInput.addEventListener('input', hitungTotal);
             });
         });
     </script>
-
 </x-layout-rab>

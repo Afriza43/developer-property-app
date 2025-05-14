@@ -13,8 +13,8 @@ use Illuminate\Support\ServiceProvider;
 use App\Repositories\EmployeeRepository;
 use App\Repositories\MaterialRepository;
 use App\Repositories\EquipmentRepository;
-use App\Repositories\JobDetailRepository;
 use App\Repositories\ProjectTypeRepository;
+use App\Repositories\SubJobDetailRepository;
 use App\Repositories\Interfaces\JobRepositoryInterface;
 use App\Repositories\Interfaces\RABRepositoryInterface;
 use App\Repositories\Interfaces\HouseRepositoryInterface;
@@ -25,8 +25,8 @@ use App\Repositories\Interfaces\ProjectRepositoryInterface;
 use App\Repositories\Interfaces\EmployeeRepositoryInterface;
 use App\Repositories\Interfaces\MaterialRepositoryInterface;
 use App\Repositories\Interfaces\EquipmentRepositoryInterface;
-use App\Repositories\Interfaces\JobDetailRepositoryInterface;
 use App\Repositories\Interfaces\ProjectTypeRepositoryInterface;
+use App\Repositories\Interfaces\SubJobDetailRepositoryInterface;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -42,7 +42,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(RABRepositoryInterface::class, RABRepository::class);
         $this->app->bind(EquipmentRepositoryInterface::class, EquipmentRepository::class);
         $this->app->bind(MaterialRepositoryInterface::class, MaterialRepository::class);
-        $this->app->bind(JobDetailRepositoryInterface::class, JobDetailRepository::class);
+        $this->app->bind(SubJobDetailRepositoryInterface::class, SubJobDetailRepository::class);
         $this->app->bind(EmployeeRepositoryInterface::class, EmployeeRepository::class);
         $this->app->bind(VolumeRepositoryInterface::class, VolumeRepository::class);
         $this->app->bind(JobRepositoryInterface::class, JobRepository::class);

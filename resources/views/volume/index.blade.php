@@ -77,7 +77,7 @@
                                                             Volume</a></li>
                                                     <li>
                                                         <form method="POST"
-                                                            action="{{ route('volume.destroy', ['job' => $job->job_id, 'volume' => $item->volume_items_id]) }}"
+                                                            action="{{ route('volume.destroy', ['sub_job_id' => $job->sub_job_id, 'volume' => $item->volume_items_id]) }}"
                                                             onsubmit="return confirm('Hapus data volume ini?')"
                                                             style="display:inline;">
                                                             @csrf
@@ -104,7 +104,7 @@
                                                             data-bs-dismiss="modal"></button>
                                                     </div>
                                                     <form method="POST"
-                                                        action="{{ route('volume.update', ['job' => $job->job_id, 'volume' => $item->volume_items_id]) }}">
+                                                        action="{{ route('volume.update', ['sub_job_id' => $job->sub_job_id, 'volume' => $item->volume_items_id]) }}">
                                                         @csrf
                                                         @method('PUT')
                                                         <div class="modal-body row g-3">
@@ -154,7 +154,7 @@
                                                             data-bs-dismiss="modal"></button>
                                                     </div>
                                                     <form method="POST"
-                                                        action="{{ route('volume.update', ['job' => $job->job_id, 'volume' => $item->volume_items_id]) }}">
+                                                        action="{{ route('volume.update', ['sub_job_id' => $job->sub_job_id, 'volume' => $item->volume_items_id]) }}">
                                                         @csrf
                                                         @method('PUT')
                                                         <div class="modal-body row g-3">
@@ -199,7 +199,7 @@
                                                             data-bs-dismiss="modal"></button>
                                                     </div>
                                                     <form method="POST"
-                                                        action="{{ route('volume.update', ['job' => $job->job_id, 'volume' => $item->volume_items_id]) }}">
+                                                        action="{{ route('volume.update', ['sub_job_id' => $job->sub_job_id, 'volume' => $item->volume_items_id]) }}">
                                                         @csrf
                                                         @method('PUT')
                                                         <div class="modal-body row g-3">
@@ -236,7 +236,7 @@
                         </div>
 
                         <div class="text-center my-3">
-                            <a href="{{ route('rab.index', ['house_id' => $job->job_category->house->house_id]) }}"
+                            <a href="{{ route('rab.index', ['type_id' => $job->job_type->type_id]) }}"
                                 class="btn btn-success">Selesai</a>
                         </div>
                     </div>
@@ -254,7 +254,7 @@
                     <h5 class="modal-title" id="modalTambahPLTLabel">Hitung Volume (P × L × T)</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form method="POST" action="{{ route('volume.store', ['job' => $job->job_id]) }}">
+                <form method="POST" action="{{ route('volume.store', ['sub_job_id' => $job->sub_job_id]) }}">
                     @csrf
                     <div class="modal-body">
                         <div class="row mb-3">
@@ -307,7 +307,7 @@
                     <h5 class="modal-title" id="modalTambahLTLabel">Hitung Volume (Luas × T)</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form method="POST" action="{{ route('volume.store', ['job' => $job->job_id]) }}">
+                <form method="POST" action="{{ route('volume.store', ['sub_job_id' => $job->sub_job_id]) }}">
                     @csrf
                     <div class="modal-body">
                         <div class="row mb-3">
@@ -353,7 +353,7 @@
                     <h5 class="modal-title" id="modalTambahVLabel">Input Volume Langsung</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form method="POST" action="{{ route('volume.store', ['job' => $job->job_id]) }}">
+                <form method="POST" action="{{ route('volume.store', ['sub_job_id' => $job->sub_job_id]) }}">
                     @csrf
                     <div class="modal-body">
                         <div class="row mb-3">

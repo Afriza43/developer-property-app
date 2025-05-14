@@ -3,23 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Models\Job;
+use App\Models\SubJob;
 use App\Models\Equipment;
 use Illuminate\Http\Request;
-use App\Repositories\JobDetailRepository;
+use App\Repositories\Interfaces\SubJobDetailRepositoryInterface;
 
 class JobEquipmentController extends Controller
 {
     protected $repo;
 
-    public function __construct(JobDetailRepository $repo)
+    public function __construct(SubJobDetailRepositoryInterface $repo)
     {
         $this->repo = $repo;
     }
 
     // Halaman untuk memilih Equipment yang akan ditambahkan
-    public function select(Request $request, $job_id)
+    public function select(Request $request, $subJobId)
     {
-        $job = $this->repo->getJob($job_id);
+        $subJob = $this->repo->getJob($subJobId);
 
         $query = Equipment::query();
 
@@ -29,48 +30,48 @@ class JobEquipmentController extends Controller
 
         $equipments = $query->get();
 
-        return view('unit-prices.job-equipments', compact('job', 'equipments'));
+        return view('unit-prices.job-equipments', compact('subJob', 'equipments'));
     }
 
-
-    // Menyimpan banyak equipment terpilih ke pivot
-    public function storeSelected(Request $request, $job_id)
+    public function storeSelected(Request $request, $subJobId)
     {
         $request->validate([
             'equipments' => 'required|array',
             'equipments.*' => 'exists:equipments,equipment_id'
         ]);
 
-        $job = $this->repo->getJob($job_id);
+        $subJob = $this->repo->getJob($subJobId);
 
         foreach ($request->equipments as $equipmentId) {
-            $this->repo->addEquipment($job, $equipmentId);
+            $this->repo->addEquipment($subJob, $equipmentId);
         }
 
-        return redirect()->route('jobs.priceAnalysis', $job_id)
-            ->with('success', 'equipment berhasil ditambahkan.');
+        return redirect()->route('jobs.priceAnalysis', $subJobId)
+            ->with('success', 'Equipment berhasil ditambahkan ke sub-job.');
     }
 
-    public function updateSingle(Request $request, $jobId, $equipmentId)
+    public function updateSingle(Request $request, $subJobId, $equipmentId)
     {
-        $job = Job::findOrFail($jobId);
+        $subJob = SubJob::findOrFail($subJobId);
         $equipment = Equipment::findOrFail($equipmentId);
 
         $koefisien = floatval($request->input('koefisien'));
-        $totalCost = $koefisien * $equipment->equipment_cost;
+        $equipmentCost = floatval($request->input('equipment_cost'));
+        $totalCost = $koefisien * $equipmentCost;
 
-        $job->equipments()->updateExistingPivot($equipmentId, [
+        $subJob->equipments()->updateExistingPivot($equipmentId, [
             'koefisien' => $koefisien,
+            'equipment_cost' => $equipmentCost,
             'total_cost' => $totalCost,
         ]);
 
         return redirect()->back()->with('success', 'Data equipment berhasil diperbarui.');
     }
 
-    public function destroy($jobId, $equipmentId)
+    public function destroy($subJobId, $equipmentId)
     {
-        $job = Job::findOrFail($jobId);
-        $job->equipments()->detach($equipmentId);
+        $subJob = SubJob::findOrFail($subJobId);
+        $subJob->equipments()->detach($equipmentId);
 
         return redirect()->back()->with('success', 'Data equipment berhasil dihapus.');
     }

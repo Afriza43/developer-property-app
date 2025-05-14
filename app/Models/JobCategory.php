@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class JobCategory extends Model
 {
@@ -11,13 +11,14 @@ class JobCategory extends Model
     public $timestamps = false;
     public $primaryKey = 'category_id';
 
-    public function jobs(): BelongsToMany
+    public function project_types()
     {
-        return $this->belongsToMany(Job::class, 'sub_jobs', 'category_id', 'job_id')->withPivot('job_cost', 'total_volume');
+        return $this->belongsToMany(ProjectType::class, 'job_types', 'category_id', 'type_id')
+            ->withPivot('jobtype_id');
     }
 
-    public function project_types(): BelongsToMany
+    public function job_types()
     {
-        return $this->belongsToMany(ProjectType::class, 'rab_type', 'category_id', 'type_id')->withPivot('budget_plan');
+        return $this->hasMany(JobType::class, 'category_id', 'category_id');
     }
 }

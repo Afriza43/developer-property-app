@@ -11,8 +11,8 @@ class VolumeItem extends Model
     public $timestamps = false;
     public $primaryKey = 'volume_items_id';
 
-    public function job(): BelongsTo
+    public function sub_job(): BelongsTo
     {
-        return $this->belongsTo(Job::class);
+        return $this->belongsTo(SubJob::class);
     }
 }

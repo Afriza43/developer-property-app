@@ -2,24 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Job;
+use App\Models\SubJob;
 use App\Models\Employee;
 use Illuminate\Http\Request;
-use App\Repositories\JobDetailRepository;
+use App\Repositories\Interfaces\SubJobDetailRepositoryInterface;
 
 class JobEmployeeController extends Controller
 {
     protected $repo;
 
-    public function __construct(JobDetailRepository $repo)
+    public function __construct(SubJobDetailRepositoryInterface $repo)
     {
         $this->repo = $repo;
     }
 
     // Halaman untuk memilih Employee yang akan ditambahkan
-    public function select(Request $request, $job_id)
+    public function select(Request $request, $subJobId)
     {
-        $job = $this->repo->getJob($job_id);
+        $subJob = $this->repo->getJob($subJobId);
 
         $query = Employee::query();
 
@@ -29,48 +29,50 @@ class JobEmployeeController extends Controller
 
         $employees = $query->get();
 
-        return view('unit-prices.job-employees', compact('job', 'employees'));
+        return view('unit-prices.job-employees', compact('subJob', 'employees'));
     }
 
 
     // Menyimpan banyak Employee terpilih ke pivot
-    public function storeSelected(Request $request, $job_id)
+    public function storeSelected(Request $request, $subJobId)
     {
         $request->validate([
             'employees' => 'required|array',
             'employees.*' => 'exists:employees,employee_id'
         ]);
 
-        $job = $this->repo->getJob($job_id);
+        $subJob = $this->repo->getJob($subJobId);
 
         foreach ($request->employees as $employeeId) {
-            $this->repo->addEmployee($job, $employeeId);
+            $this->repo->addEmployee($subJob, $employeeId);
         }
 
-        return redirect()->route('jobs.priceAnalysis', $job_id)
+        return redirect()->route('jobs.priceAnalysis', $subJobId)
             ->with('success', 'employee berhasil ditambahkan.');
     }
 
-    public function updateSingle(Request $request, $jobId, $employeeId)
+    public function updateSingle(Request $request, $subJobId, $employeeId)
     {
-        $job = Job::findOrFail($jobId);
+        $subJob = SubJob::findOrFail($subJobId);
         $employee = Employee::findOrFail($employeeId);
 
         $koefisien = floatval($request->input('koefisien'));
-        $totalCost = $koefisien * $employee->wage;
+        $wage = $request->input('wage');
+        $totalCost = $koefisien * $wage;
 
-        $job->employees()->updateExistingPivot($employeeId, [
+        $subJob->employees()->updateExistingPivot($employeeId, [
             'koefisien' => $koefisien,
             'total_cost' => $totalCost,
+            'wage' => $wage,
         ]);
 
         return redirect()->back()->with('success', 'Data Employee berhasil diperbarui.');
     }
 
-    public function destroy($jobId, $employeeId)
+    public function destroy($subJobId, $employeeId)
     {
-        $job = Job::findOrFail($jobId);
-        $job->employees()->detach($employeeId);
+        $subJob = SubJob::findOrFail($subJobId);
+        $subJob->employees()->detach($employeeId);
 
         return redirect()->back()->with('success', 'Data Employee berhasil dihapus.');
     }

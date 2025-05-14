@@ -20,7 +20,8 @@ return new class extends Migration
             $table->double('height');
             $table->double('wide');
             $table->double('volume_per_unit');
-            $table->foreignId('job_id')->references('job_id')->on('jobs')->onDelete('cascade');;
+            $table->double('total_volume')->nullable();
+            $table->foreignId('sub_job_id')->references('sub_job_id')->on('sub_jobs')->onDelete('cascade');;
         });
     }
 

@@ -18,9 +18,14 @@ class EquipmentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $equipments = $this->equipmentRepository->getEquipments();
+
+        if ($request->has('set_redirect') && $request->has('sub_job_id')) {
+            session(['redirect_sub_job_id' => $request->query('sub_job_id')]);
+        }
+
         return view('equipments.index', compact('equipments'));
     }
 
@@ -41,7 +46,6 @@ class EquipmentController extends Controller
             'equipment_name'   => 'required|string|max:20',
             'description'      => 'required|string|max:50',
             'equipment_unit'   => 'required',
-            'equipment_cost'   => 'required|numeric|min:0',
         ]);
 
         $this->equipmentRepository->createEquipment($data);
@@ -76,7 +80,6 @@ class EquipmentController extends Controller
             'equipment_name'   => 'required|string|max:20',
             'description'      => 'required|string|max:50',
             'equipment_unit'   => 'required',
-            'equipment_cost'   => 'required|numeric|min:0',
         ]);
 
         $this->equipmentRepository->updateEquipment($equipment->equipment_id, $data);
