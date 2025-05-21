@@ -21,23 +21,23 @@
                 <h3 class="welcome-text">Selamat Datang!</h3>
                 <form id="loginForm" action="{{ route('login.post') }}" method="POST">
                     @csrf
-                    <!-- Email Field -->
+                    <!-- Username Field -->
                     <div class="form-floating">
-                        <input type="email" class="form-control" id="email" placeholder="name@example.com"
-                            required name="email">
-                        <label for="email">Email Pengguna</label>
-                        @error('record')
-                            <div class="error-message" id="emailError">{{ $message }}</div>
+                        <input type="text" class="form-control" id="username" placeholder="Username" required
+                            name="username" value="{{ old('username') }}">
+                        <label for="username">Username Pengguna</label>
+                        @error('username')
+                            <div class="text-danger small">{{ $message }}</div>
                         @enderror
                     </div>
 
                     <!-- Password Field -->
                     <div class="form-floating">
-                        <input type="password" class="form-control" id="password" placeholder="Password" required
-                            name="password">
+                        <input type="password" class="form-control" id="password" name="password"
+                            placeholder="Password" required>
                         <label for="password">Password</label>
-                        @error('record')
-                            <div class="error-message" id="passwordError">{{ $message }}</div>
+                        @error('password')
+                            <div class="text-danger small">{{ $message }}</div>
                         @enderror
                     </div>
 

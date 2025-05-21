@@ -72,12 +72,14 @@
                         <h3 class="card-title col">
                             Daftar Rumah
                         </h3>
-                        <div class="col-auto d-flex justify-content-end">
-                            <button type="button" data-bs-toggle="modal" data-bs-target="#createHouseModal"
-                                class="btn btn-success">
-                                <i class="bi bi-plus-lg"></i> Tambah Rumah
-                            </button>
-                        </div>
+                        @role('keuangan')
+                            <div class="col-auto d-flex justify-content-end">
+                                <button type="button" data-bs-toggle="modal" data-bs-target="#createHouseModal"
+                                    class="btn btn-success">
+                                    <i class="bi bi-plus-lg"></i> Tambah Rumah
+                                </button>
+                            </div>
+                        @endrole
                     </div>
                 </div>
                 <div class="card-body">
@@ -102,29 +104,33 @@
                                         {{ $house->house_cost !== null ? 'Rp ' . number_format($house->house_cost, 0, ',', '.') : 'Rp 0' }}
                                     </td>
                                     <td class="text-center">
-                                        <a href="{{ route('expenses.index', ['house_id' => $house->house_id]) }}">
-                                            <button type="button" class="btn btn-primary bg-blue">
-                                                <i class="bi bi-file-earmark-bar-graph-fill"></i>
+                                        @role('site-admin')
+                                            <a href="{{ route('expenses.index', ['house_id' => $house->house_id]) }}">
+                                                <button type="button" class="btn btn-primary bg-blue">
+                                                    <i class="bi bi-file-earmark-bar-graph-fill"></i>
+                                                </button>
+                                            </a>
+                                        @endrole
+                                        @role('keuangan')
+                                            <a href="{{ route('houses.show', $house->house_id) }}">
+                                                <button type="button" class="btn btn-primary bg-blue">
+                                                    <i class="bi bi-file-earmark-bar-graph-fill"></i>
+                                                </button>
+                                            </a>
+                                            <button type="button" data-bs-toggle="modal"
+                                                data-bs-target="#editHouseModal-{{ $house->house_id }}"
+                                                class="btn btn-warning">
+                                                <i class="bi bi-pencil-square"></i>
                                             </button>
-                                        </a>
-                                        <a href="{{ route('houses.show', $house->house_id) }}">
-                                            <button type="button" class="btn btn-info bg-blue">
-                                                <i class="bi bi-file-earmark-bar-graph-fill"></i>
-                                            </button>
-                                        </a>
-                                        <button type="button" data-bs-toggle="modal"
-                                            data-bs-target="#editHouseModal-{{ $house->house_id }}"
-                                            class="btn btn-warning">
-                                            <i class="bi bi-pencil-square"></i>
-                                        </button>
-                                        <form action="{{ route('houses.destroy', $house->house_id) }}" method="POST"
-                                            class="d-inline" onsubmit="return confirm('Hapus rumah ini?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger">
-                                                <i class="bi bi-trash3-fill"></i>
-                                            </button>
-                                        </form>
+                                            <form action="{{ route('houses.destroy', $house->house_id) }}" method="POST"
+                                                class="d-inline" onsubmit="return confirm('Hapus rumah ini?')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger">
+                                                    <i class="bi bi-trash3-fill"></i>
+                                                </button>
+                                            </form>
+                                        @endrole
                                     </td>
 
                                     {{-- Modal Edit Rumah --}}

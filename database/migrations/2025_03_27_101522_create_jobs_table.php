@@ -28,7 +28,7 @@ return new class extends Migration
 
         Schema::create('job_types', function (Blueprint $table) {
             $table->id('jobtype_id');
-            $table->string('rename', 50)->nullable();
+            $table->string('rename', 30)->nullable();
             $table->foreignId('type_id')->constrained('project_types', 'type_id')->onDelete('cascade');
             $table->foreignId('category_id')->constrained('job_categories', 'category_id')->onDelete('cascade');
             $table->timestamps();
@@ -38,6 +38,7 @@ return new class extends Migration
             $table->id('sub_job_id');
             $table->decimal('job_cost', 11)->nullable();
             $table->double('total_volume')->nullable();
+            $table->string('rename', 30)->nullable();
             $table->foreignId('jobtype_id')->constrained('job_types', 'jobtype_id')->onDelete('cascade');
             $table->foreignId('job_id')->constrained('jobs', 'job_id')->onDelete('cascade');
         });

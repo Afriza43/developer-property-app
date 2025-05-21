@@ -23,10 +23,12 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-2">
-                            <button type="button" data-bs-toggle="modal" data-bs-target="#addTypeModal"
-                                class="btn btn-success">Tambah Tipe</button>
-                        </div>
+                        @role('keuangan')
+                            <div class="col-md-2">
+                                <button type="button" data-bs-toggle="modal" data-bs-target="#addTypeModal"
+                                    class="btn btn-success">Tambah Tipe</button>
+                            </div>
+                        @endrole
                     </div>
                 </form>
             </div>
@@ -50,26 +52,30 @@
                                 <hr>
                                 <div class="d-flex justify-content-end">
                                     {{-- Tombol untuk Detail --}}
-                                    <a href="{{ route('rab.index', ['type_id' => $type->type_id]) }}">
-                                        <button class="btn btn-primary me-2" type="button">
-                                            <i class="bi bi-file-earmark-spreadsheet"></i> RAB
-                                        </button>
-                                    </a>
-
+                                    @role('teknik')
+                                        <a href="{{ route('rab.index', ['type_id' => $type->type_id]) }}">
+                                            <button class="btn btn-primary me-2" type="button">
+                                                <i class="bi bi-file-earmark-spreadsheet"></i> RAB
+                                            </button>
+                                        </a>
+                                    @endrole
+                                    {{-- Tombol untuk Detail --}}
                                     {{-- Tombol untuk Edit --}}
-                                    <button class="btn btn-warning me-2" type="button" data-bs-toggle="modal"
-                                        data-bs-target="#editTypeModal-{{ $type->type_id }}">
-                                        <i class="bi bi-pencil-square"></i> Edit
-                                    </button>
-
-                                    {{-- Tombol untuk Hapus --}}
-                                    <form action="{{ route('project-types.destroy', $type->type_id) }}" method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button class="btn btn-danger">
-                                            <i class="bi bi-trash-fill"></i> Hapus
+                                    @role('keuangan')
+                                        <button class="btn btn-warning me-2" type="button" data-bs-toggle="modal"
+                                            data-bs-target="#editTypeModal-{{ $type->type_id }}">
+                                            <i class="bi bi-pencil-square"></i> Edit
                                         </button>
-                                    </form>
+
+                                        {{-- Tombol untuk Hapus --}}
+                                        <form action="{{ route('project-types.destroy', $type->type_id) }}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button class="btn btn-danger">
+                                                <i class="bi bi-trash-fill"></i> Hapus
+                                            </button>
+                                        </form>
+                                    @endrole
                                 </div>
                             </div>
                         </div>

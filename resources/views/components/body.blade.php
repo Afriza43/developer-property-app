@@ -20,6 +20,10 @@
 
 <body>
     <script src="assets/static/js/initTheme.js"></script>
+    @php
+        use Illuminate\Support\Facades\Auth;
+        $user = Auth::user();
+    @endphp
     <div id="app">
         <div id="main" class="layout-horizontal">
             <header class="mb-5">
@@ -36,12 +40,20 @@
                                 <a href="#" id="topbarUserDropdown"
                                     class="user-dropdown d-flex align-items-center dropend dropdown-toggle "
                                     data-bs-toggle="dropdown" aria-expanded="false">
-                                    <div class="avatar avatar-md2">
-                                        <img src="{{ asset('assets/image/logo-ajisaka.png') }}" alt="Avatar">
-                                    </div>
+                                    @role('keuangan')
+                                        <div class="avatar avatar-md2">
+                                            <img src="{{ asset('assets/image/pic-cewe.png') }}" alt="Avatar">
+                                        </div>
+                                    @endrole
+                                    @role('teknik')
+                                        <div class="avatar avatar-md2">
+                                            <img src="{{ asset('assets/image/pic-cowo.png') }}" alt="Avatar">
+                                        </div>
+                                    @endrole
                                     <div class="text">
-                                        <h6 class="user-dropdown-name">John Ducky</h6>
-                                        <p class="user-dropdown-status text-sm text-muted">Member</p>
+                                        <h6 class="user-dropdown-name">{{ $user->name }}</h6>
+                                        <p class="user-dropdown-status text-sm text-muted">
+                                            Staff {{ $user->getRoleNames()->first() }}</p>
                                     </div>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end shadow-lg"

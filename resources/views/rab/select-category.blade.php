@@ -63,42 +63,6 @@
                                                 </button>
                                             </td>
                                         </tr>
-
-                                        <div class="modal fade" id="editCategoryModal-{{ $category->category_id }}"
-                                            tabindex="-1" aria-labelledby="editCategoryModalLabel" aria-hidden="true">
-                                            <div class="modal-dialog">
-                                                <form
-                                                    action="{{ route('categories.updateJobCategory', $category->category_id) }}"
-                                                    method="POST" enctype="multipart/form-data">
-                                                    @csrf
-                                                    @method('PUT')
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title" id="editCategoryModalLabel">Edit
-                                                                Pekerjaan</h5>
-                                                            </h5>
-                                                            <button type="button" class="btn-close"
-                                                                data-bs-dismiss="modal" aria-label="Tutup"></button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <div class="mb-3">
-                                                                <label for="category_name" class="form-label">Nama
-                                                                    Pekerjaan</label>
-                                                                <input type="text" class="form-control"
-                                                                    id="category_name" name="category_name"
-                                                                    value="{{ $category->category_name }}" required>
-                                                            </div>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="submit"
-                                                                class="btn btn-success">Simpan</button>
-                                                            <button type="button" class="btn btn-secondary"
-                                                                data-bs-dismiss="modal">Batal</button>
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
                                     @empty
                                         <tr>
                                             <td colspan="2" class="text-center">Tidak ada kategori tersedia.</td>
@@ -185,5 +149,40 @@
                 </form>
             </div>
         </div>
+
+        @foreach ($availableCategories as $category)
+            <div class="modal fade" id="editCategoryModal-{{ $category->category_id }}" tabindex="-1"
+                aria-labelledby="editCategoryModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <form action="{{ route('categories.updateJobCategory', $category->category_id) }}" method="POST"
+                        enctype="multipart/form-data">
+                        @csrf
+                        @method('PUT')
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editCategoryModalLabel">Edit
+                                    Pekerjaan</h5>
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Tutup"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="category_name" class="form-label">Nama
+                                        Pekerjaan</label>
+                                    <input type="text" class="form-control" id="category_name"
+                                        name="category_name" value="{{ $category->category_name }}" required>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-success">Simpan</button>
+                                <button type="button" class="btn btn-secondary"
+                                    data-bs-dismiss="modal">Batal</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        @endforeach
     </x-requirement>
 </x-layout-rab>

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('block', 8);
             $table->char('number', 2);
             $table->string('type', 8);
+            $table->decimal('house_cost', 11)->nullable();
             $table->foreignId('project_id')->constrained('projects', 'project_id')->onDelete('cascade');
         });
     }

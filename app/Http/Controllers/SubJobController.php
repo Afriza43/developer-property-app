@@ -45,7 +45,8 @@ class SubJobController extends Controller
                 'job_id' => $jobId
             ], [
                 'total_volume' => 0,
-                'job_cost' => 0
+                'job_cost' => 0,
+                'rename' => null
             ]);
         }
 

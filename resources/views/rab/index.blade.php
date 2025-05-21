@@ -9,8 +9,11 @@
                     </p>
                 </div>
                 <div class="col-12 col-md-6 order-md-2 order-first">
+                    @php
+                        $user = Auth::user();
+                    @endphp
                     <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
-                        <h7>User</h7>
+                        <h7>{{ $user->name }}</h7>
                     </nav>
                 </div>
             </div>

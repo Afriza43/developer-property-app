@@ -101,12 +101,14 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-2">
-                            <button type="button" data-bs-toggle="modal" data-bs-target="#createProjectModal"
-                                class="btn btn-success d-flex items-center justify-content-center">Tambah
-                                Perumahan
-                            </button>
-                        </div>
+                        @role('keuangan')
+                            <div class="col-md-2">
+                                <button type="button" data-bs-toggle="modal" data-bs-target="#createProjectModal"
+                                    class="btn btn-success d-flex items-center justify-content-center">Tambah
+                                    Perumahan
+                                </button>
+                            </div>
+                        @endrole
                     </div>
                 </form>
             </div>
@@ -144,25 +146,28 @@
                             <div class="d-flex justify-content-end">
                                 <a href="{{ route('project-types.index', ['project_id' => $project->project_id]) }}">
                                     <button class="btn btn-info me-2">
-                                        <i class="bi bi-house"></i> RAB
+                                        <i class="bi bi-house"></i> Tipe
                                     </button>
                                 </a>
-                                <a href="{{ route('houses.index', ['project_id' => $project->project_id]) }}">
-                                    <button class="btn btn-primary me-2">
-                                        <i class="bi bi-eye-fill"></i> Detail
+                                @role('keuangan')
+                                    <a href="{{ route('houses.index', ['project_id' => $project->project_id]) }}">
+                                        <button class="btn btn-primary me-2">
+                                            <i class="bi bi-eye-fill"></i> Kelola
+                                        </button>
+                                    </a>
+
+                                    <button class="btn btn-warning me-2" type="button" data-bs-toggle="modal"
+                                        data-bs-target="#editProjectModal-{{ $project->project_id }}">
+                                        <i class="bi bi-pencil-square"></i> Edit
                                     </button>
-                                </a>
-                                <button class="btn btn-warning me-2" type="button" data-bs-toggle="modal"
-                                    data-bs-target="#editProjectModal-{{ $project->project_id }}">
-                                    <i class="bi bi-pencil-square"></i> Edit
-                                </button>
-                                <form action="{{ route('projects.destroy', $project->project_id) }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn btn-danger">
-                                        <i class="bi bi-trash-fill"></i> Hapus
-                                    </button>
-                                </form>
+                                    <form action="{{ route('projects.destroy', $project->project_id) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="btn btn-danger">
+                                            <i class="bi bi-trash-fill"></i> Hapus
+                                        </button>
+                                    </form>
+                                @endrole
                             </div>
                         </div>
                     </div>

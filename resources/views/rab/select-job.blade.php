@@ -66,48 +66,6 @@
                                                 </button>
                                             </td>
                                         </tr>
-
-                                        <div class="modal fade" id="editJobModal-{{ $job->job_id }}" tabindex="-1"
-                                            aria-labelledby="editJobModalLabel" aria-hidden="true">
-                                            <div class="modal-dialog">
-                                                <form action="{{ route('jobs.updateJob', $job->job_id) }}"
-                                                    method="POST" enctype="multipart/form-data">
-                                                    @csrf
-                                                    @method('PUT')
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title" id="editJobModalLabel">Edit Sub
-                                                                Pekerjaan</h5>
-                                                            </h5>
-                                                            <button type="button" class="btn-close"
-                                                                data-bs-dismiss="modal" aria-label="Tutup"></button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <div class="mb-3">
-                                                                <label for="job_name" class="form-label">Nama
-                                                                    Pekerjaan</label>
-                                                                <input type="text" class="form-control"
-                                                                    id="job_name" name="job_name"
-                                                                    value="{{ $job->job_name }}" required>
-                                                            </div>
-                                                            <div class="mb-3">
-                                                                <label for="satuan_volume" class="form-label">Satuan
-                                                                    Volume</label>
-                                                                <input type="text" class="form-control"
-                                                                    id="satuan_volume" name="satuan_volume"
-                                                                    value="{{ $job->satuan_volume }}" required>
-                                                            </div>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="submit"
-                                                                class="btn btn-success">Simpan</button>
-                                                            <button type="button" class="btn btn-secondary"
-                                                                data-bs-dismiss="modal">Batal</button>
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
                                     @empty
                                         <tr>
                                             <td colspan="2" class="text-center">Tidak ada pekerjaan tersedia.</td>
@@ -162,8 +120,7 @@
             </div>
         </div>
 
-        <div class="modal fade" id="addJobModal" tabindex="-1" aria-labelledby="addJobModalLabel"
-            aria-hidden="true">
+        <div class="modal fade" id="addJobModal" tabindex="-1" aria-labelledby="addJobModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <form action="{{ route('jobs.addJob', $jobType->jobtype_id) }}" method="POST"
                     enctype="multipart/form-data">
@@ -194,5 +151,46 @@
                 </form>
             </div>
         </div>
+
+        @foreach ($availableJobs as $job)
+            <div class="modal fade" id="editJobModal-{{ $job->job_id }}" tabindex="-1"
+                aria-labelledby="editJobModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <form action="{{ route('jobs.updateJob', $job->job_id) }}" method="POST"
+                        enctype="multipart/form-data">
+                        @csrf
+                        @method('PUT')
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editJobModalLabel">Edit Sub
+                                    Pekerjaan</h5>
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Tutup"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="job_name" class="form-label">Nama
+                                        Pekerjaan</label>
+                                    <input type="text" class="form-control" id="job_name" name="job_name"
+                                        value="{{ $job->job_name }}" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="satuan_volume" class="form-label">Satuan
+                                        Volume</label>
+                                    <input type="text" class="form-control" id="satuan_volume"
+                                        name="satuan_volume" value="{{ $job->satuan_volume }}" required>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-success">Simpan</button>
+                                <button type="button" class="btn btn-secondary"
+                                    data-bs-dismiss="modal">Batal</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        @endforeach
     </x-requirement>
 </x-layout-rab>
