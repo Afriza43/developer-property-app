@@ -23,12 +23,10 @@
                                 </select>
                             </div>
                         </div>
-                        @role('keuangan')
-                            <div class="col-md-2">
-                                <button type="button" data-bs-toggle="modal" data-bs-target="#addTypeModal"
-                                    class="btn btn-success">Tambah Tipe</button>
-                            </div>
-                        @endrole
+                        <div class="col-md-2">
+                            <button type="button" data-bs-toggle="modal" data-bs-target="#addTypeModal"
+                                class="btn btn-success">Tambah Tipe</button>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -49,8 +47,29 @@
 
                             <div class="card-body">
                                 <h4 class="card-title text-center">{{ $type->name }} - {{ $type->type }}</h4>
+                                <ul class="p-2">
+                                    <li class="list-group-item card-text py-1">
+                                        <i class="bi bi-tags"></i> Tipe: {{ $type->type }}
+                                    </li>
+                                    <li class="list-group-item card-text py-1">
+                                        <i class="bi bi-stickies"></i> Keterangan: {{ $type->identifier }}
+                                    </li>
+                                    <li class="list-group-item card-text py-1">
+                                        <i class="bi bi-cash"></i> Total Anggaran:
+                                        {{ number_format($type->total_budget, 0, ',', '.') }}
+                                    </li>
+                                </ul>
                                 <hr>
                                 <div class="d-flex justify-content-end">
+                                    <form action="{{ route('project-types.copy-rab', $type->type_id) }}" method="POST"
+                                        onsubmit="return confirm('Apakah Anda yakin ingin menyalin RAB ini?')">
+                                        @csrf
+                                        <button class="btn btn-success me-2" type="submit">
+                                            <i class="bi bi-copy"></i>
+                                            Copy
+                                        </button>
+                                    </form>
+
                                     {{-- Tombol untuk Detail --}}
                                     @role('teknik')
                                         <a href="{{ route('rab.index', ['type_id' => $type->type_id]) }}">
@@ -59,23 +78,19 @@
                                             </button>
                                         </a>
                                     @endrole
-                                    {{-- Tombol untuk Detail --}}
-                                    {{-- Tombol untuk Edit --}}
-                                    @role('keuangan')
-                                        <button class="btn btn-warning me-2" type="button" data-bs-toggle="modal"
-                                            data-bs-target="#editTypeModal-{{ $type->type_id }}">
-                                            <i class="bi bi-pencil-square"></i> Edit
-                                        </button>
+                                    <button class="btn btn-warning me-2" type="button" data-bs-toggle="modal"
+                                        data-bs-target="#editTypeModal-{{ $type->type_id }}">
+                                        <i class="bi bi-pencil-square"></i> Edit
+                                    </button>
 
-                                        {{-- Tombol untuk Hapus --}}
-                                        <form action="{{ route('project-types.destroy', $type->type_id) }}" method="POST">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button class="btn btn-danger">
-                                                <i class="bi bi-trash-fill"></i> Hapus
-                                            </button>
-                                        </form>
-                                    @endrole
+                                    {{-- Tombol untuk Hapus --}}
+                                    <form action="{{ route('project-types.destroy', $type->type_id) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="btn btn-danger">
+                                            <i class="bi bi-trash-fill"></i> Hapus
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -107,6 +122,11 @@
                                             <label for="type" class="form-label">Kode Tipe</label>
                                             <input type="text" class="form-control" id="type" name="type"
                                                 value="{{ $type->type }}" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="identifier" class="form-label">Keterangan</label>
+                                            <input type="text" class="form-control" id="identifier"
+                                                name="identifier" value="{{ $type->identifier }}" required>
                                         </div>
                                         <div class="mb-3">
                                             <label for="image" class="form-label">Gambar (Opsional)</label>
@@ -162,6 +182,10 @@
                         <div class="mb-3">
                             <label for="type" class="form-label">Kode Tipe</label>
                             <input type="text" class="form-control" id="type" name="type" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="identifier" class="form-label">Keterangan</label>
+                            <input type="text" class="form-control" id="identifier" name="identifier" required>
                         </div>
                         <div class="mb-3">
                             <label for="image" class="form-label">Gambar (Opsional)</label>

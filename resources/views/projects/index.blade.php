@@ -149,13 +149,13 @@
                                         <i class="bi bi-house"></i> Tipe
                                     </button>
                                 </a>
-                                @role('keuangan')
-                                    <a href="{{ route('houses.index', ['project_id' => $project->project_id]) }}">
-                                        <button class="btn btn-primary me-2">
-                                            <i class="bi bi-eye-fill"></i> Kelola
-                                        </button>
-                                    </a>
 
+                                <a href="{{ route('houses.index', ['project_id' => $project->project_id]) }}">
+                                    <button class="btn btn-primary me-2">
+                                        <i class="bi bi-eye-fill"></i> Kelola
+                                    </button>
+                                </a>
+                                @role('keuangan')
                                     <button class="btn btn-warning me-2" type="button" data-bs-toggle="modal"
                                         data-bs-target="#editProjectModal-{{ $project->project_id }}">
                                         <i class="bi bi-pencil-square"></i> Edit

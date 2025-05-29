@@ -6,11 +6,6 @@
                     <h3>Laporan Pengeluaran Pembangunan Rumah</h3>
                     <p class="text-subtitle text-muted">Rumah {{ $house->name }}</p>
                 </div>
-                <div class="col-12 col-md-6 order-md-2 order-first">
-                    <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
-                        <h7>User</h7>
-                    </nav>
-                </div>
             </div>
         </div>
         <section class="section">
@@ -55,7 +50,7 @@
                                                         <button class="btn btn-primary" type="button"
                                                             data-bs-toggle="modal"
                                                             data-bs-target="#previewImage-{{ $expense->expense_id }}">
-                                                            <i class="bi bi-eye h5"></i>
+                                                            <i class="bi bi-eye"></i>
                                                         </button>
                                                     </td>
                                                 </tr>
@@ -144,7 +139,6 @@
                                                                         collect();
                                                                 @endphp
 
-
                                                                 @if ($filteredPhotos->count() > 0)
                                                                     <div id="Gallerycarousel{{ $progress->progress_reports_id }}"
                                                                         class="carousel slide carousel-fade"
@@ -214,6 +208,10 @@
                                     Silahkan pilih jenis laporan terlebih dahulu.
                                 </div>
                             @endif
+                            <div class="d-flex justify-content-center mt-3">
+                                <a href="{{ route('houses.index', ['project_id' => $house->project->project_id]) }}"
+                                    class="btn btn-secondary">Kembali</a>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -21,7 +21,7 @@ class ProgresRepository implements ProgresRepositoryInterface
 
     public function getProgressByHouseId($houseId)
     {
-        return ProgressReport::with('house')->where('house_id', $houseId)->get();
+        return ProgressReport::where('house_id', $houseId)->get();
     }
 
     public function getProgressData($id)
@@ -46,6 +46,6 @@ class ProgresRepository implements ProgresRepositoryInterface
     public function showProgressPhoto($progressCollection)
     {
         $ids = $progressCollection->pluck('progress_reports_id');
-        return ProgressPhoto::whereIn('progress_reports_id', $ids)->get();
+        return ProgressPhoto::whereIn('progress_reports_id', $ids)->get()->groupBy('progress_reports_id');
     }
 }

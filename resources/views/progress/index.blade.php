@@ -6,13 +6,9 @@
                     <h3>Laporan Progres Pembangunan Rumah</h3>
                     <p class="text-subtitle text-muted">{{ $house->name }}</p>
                 </div>
-                <div class="col-12 col-md-6 order-md-2 order-first">
-                    <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
-                        <h7>User</h7>
-                    </nav>
-                </div>
             </div>
         </div>
+
         <section class="section">
             <div class="row" id="table-bordered">
                 <div class="col-12">
@@ -86,10 +82,8 @@
 
                                                         <div class="modal-body">
                                                             @php
-                                                                $filteredPhotos = $photos->where(
-                                                                    'progress_reports_id',
-                                                                    $progres->progress_reports_id,
-                                                                );
+                                                                $filteredPhotos =
+                                                                    $photos[$progres->progress_reports_id] ?? collect();
                                                             @endphp
 
                                                             @if ($filteredPhotos->count() > 0)
@@ -120,6 +114,7 @@
                                                                                     alt="Photo {{ $index + 1 }}">
                                                                             </div>
                                                                         @endforeach
+
                                                                     </div>
 
                                                                     <!-- Controls -->
@@ -201,11 +196,9 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="button">
-                                <div class="buttons">
-                                    <a href="{{ route('houses.index', ['project_id' => $house->project->project_id]) }}"
-                                        class="btn btn-danger">Kembali</a>
-                                </div>
+                            <div class="d-flex justify-content-center mt-2 mb-3">
+                                <a href="{{ route('houses.index', ['project_id' => $house->project->project_id]) }}"
+                                    class="btn btn-secondary">Kembali</a>
                             </div>
                         </div>
                     </div>

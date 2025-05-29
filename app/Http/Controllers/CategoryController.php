@@ -81,8 +81,8 @@ class CategoryController extends Controller
 
     public function deleteJobCategory($categoryId)
     {
-        dd($categoryId);
         JobCategory::find($categoryId)->delete();
+
         return redirect()->back()->with('success', 'Job Category deleted successfully.');
     }
 }

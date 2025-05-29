@@ -128,6 +128,12 @@
                             </tbody>
                         </table>
                     </div>
+
+                    <div class="d-flex justify-content-center mt-3 mb-3">
+                        <a href="{{ route('projects.index') }}">
+                            <button type="submit" class="btn btn-secondary">Kembali</button>
+                        </a>
+                    </div>
                 </div>
             </div>
         </section>

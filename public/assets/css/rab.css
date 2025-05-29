@@ -1,0 +1,116 @@
+@media print {
+	body {
+		margin: 0;
+	}
+	.no-print {
+		display: none;
+	}
+}
+
+body {
+	font-family: Arial, sans-serif;
+	font-size: 11px;
+	margin: 20px;
+	background: white;
+}
+
+.header {
+	text-align: center;
+	font-weight: bold;
+	font-size: 14px;
+	margin-bottom: 20px;
+	text-decoration: underline;
+}
+
+.project-info {
+	margin-bottom: 20px;
+}
+
+.project-info table {
+	border: none;
+	width: 100%;
+}
+
+.project-info td {
+	padding: 2px 5px;
+	border: 1px solid black;
+	vertical-align: top;
+}
+
+.project-info .label {
+	font-weight: bold;
+	width: 150px;
+	background-color: #f0f0f0;
+}
+
+.main-table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 10px;
+}
+
+.main-table th,
+.main-table td {
+	border: 1px solid black;
+	padding: 4px 6px;
+	text-align: left;
+	vertical-align: middle;
+}
+
+.main-table th {
+	background-color: #f0f0f0;
+	font-weight: bold;
+	text-align: center;
+}
+
+.main-table .center {
+	text-align: center;
+}
+
+.main-table .right {
+	text-align: right;
+}
+
+.main-table .section-header {
+	background-color: #f0f0f0;
+	font-weight: bold;
+}
+
+.main-table .subsection {
+	padding-left: 15px;
+}
+
+.main-table .total-row {
+	background-color: #f9f9f9;
+	font-weight: bold;
+}
+
+.currency {
+	text-align: right;
+}
+
+.edit-button {
+	background: #007bff;
+	color: white;
+	border: none;
+	padding: 5px 10px;
+	margin: 10px 0;
+	cursor: pointer;
+	border-radius: 3px;
+}
+
+.edit-button:hover {
+	background: #0056b3;
+}
+
+.editable {
+	background: #fff3cd;
+}
+
+input[type="text"],
+select {
+	border: 1px solid #ccc;
+	padding: 2px;
+	width: 100%;
+	box-sizing: border-box;
+}

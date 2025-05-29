@@ -15,7 +15,7 @@ class HouseRepository implements HouseRepositoryInterface
 {
     public function getHouse($id)
     {
-        return House::findOrFail($id);
+        return House::with('project')->findOrFail($id);
     }
 
     public function getProject($id)
@@ -40,14 +40,34 @@ class HouseRepository implements HouseRepositoryInterface
         return $countType;
     }
 
-    public function getHouseById($id)
+    // public function getHouseById($id)
+    // {
+    //     return House::with(['project', 'expense_reports'])->where('project_id', $id)->get()->map(function ($house) {
+    //         $house->house_cost = $house->expense_reports->sum('total_expense');
+    //         $house->save();
+    //         return $house;
+    //     });
+    // }
+
+    public function getHouseById($projectId)
     {
-        return House::with(['project', 'expense_reports'])->where('project_id', $id)->get()->map(function ($house) {
+        $project = $this->getProject($projectId);
+        $projectTypes = collect($project->project_types);
+
+        return House::with(['project', 'expense_reports'])->where('project_id', $projectId)->get()->map(function ($house) use ($projectTypes) {
             $house->house_cost = $house->expense_reports->sum('total_expense');
-            $house->save();
+
+            $matchingType = $projectTypes->first(function ($type) use ($house) {
+                return $type->type === $house->type;
+            });
+
+            $house->budget_plan = $matchingType?->budget_plan ?? 0;
+            $house->profit_loss = $house->budget_plan - $house->house_cost;
+
             return $house;
         });
     }
+
 
     public function getHousesData($projectId)
     {

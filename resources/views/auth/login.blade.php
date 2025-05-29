@@ -41,14 +41,6 @@
                         @enderror
                     </div>
 
-                    <!-- Options -->
-                    <div class="options">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="remember">
-                            <label class="form-check-label" for="remember">Ingat saya</label>
-                        </div>
-                    </div>
-
                     <!-- Submit Button -->
                     <button type="submit" class="btn btn-primary btn-login">
                         <i class="bi bi-box-arrow-in-right me-2"></i> Masuk

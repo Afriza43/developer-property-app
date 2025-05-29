@@ -19,6 +19,10 @@ class AuthController extends Controller
 
     public function showLoginForm()
     {
+        if (Auth::check()) {
+            return redirect()->route('projects.index')->with('info', 'Anda sudah login.');
+        }
+
         return view('auth.login');
     }
 
@@ -36,15 +40,13 @@ class AuthController extends Controller
             $user = Auth::user();
 
             if ($user->hasRole('site-admin')) {
-                // Cari project_id yang berelasi dengan user DAN role 'site-admin'
                 $project = $user->projects()
                     ->whereHas('users', function ($query) use ($user) {
                         $query->where('users.user_id', $user->user_id);
                     })
-                    ->first(); // Mengambil satu project saja
+                    ->first();
                 if ($project) {
-                    // Redirect ke route houses.index dengan project_id
-                    return redirect()->route('houses.index', ['project_id' => $project->project_id]); // Menggunakan id dari tabel projects
+                    return redirect()->route('houses.index', ['project_id' => $project->project_id])->with('success', 'Berhasil login.');
                 } else {
                     return redirect()->route('projects.index')->with('success', 'Berhasil login.');
                 }
@@ -62,7 +64,9 @@ class AuthController extends Controller
     public function logout()
     {
         Auth::logout();
-        return redirect()->route('login');
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
+        return redirect()->route('login')->with('success', 'Berhasil logout.');
     }
 
     public function changeData(Request $request)

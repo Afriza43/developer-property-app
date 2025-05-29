@@ -36,7 +36,7 @@
                             </div>
                             <div class="button">
                                 <div class="buttons">
-                                    <a href="#">
+                                    <a href="{{ route('rab.viewPDF', $type->type_id) }}">
                                         <button class="btn-success btn p-2" type="button">
                                             Cetak RAB
                                         </button></a>
@@ -61,10 +61,17 @@
                                     </thead>
                                     <tbody class="table-bordered ">
                                         @foreach ($jobCategories as $category)
-                                            @php $no = 1; @endphp
+                                            @php
+                                                $no = 1;
+                                                // Ambil job_type spesifik untuk kategori ini dan project_type yang sedang aktif
+                                                $jobTypeForThisCategory = $category->job_types
+                                                    ->where('type_id', $type->type_id)
+                                                    ->first();
+                                            @endphp
                                             <tr>
                                                 <td class="text-center">
-                                                    <form action="{{ route('rab.destroy', $category->category_id) }}"
+                                                    <form
+                                                        action="{{ route('rab.destroy', $jobTypeForThisCategory->jobtype_id) }}"
                                                         method="POST"
                                                         onsubmit="return confirm('Yakin ingin menghapus kategori pekerjaan ini?')">
                                                         @csrf
@@ -76,7 +83,13 @@
                                                     </form>
                                                 </td>
                                                 <td colspan="4" class="text-start">
-                                                    <strong>{{ $category->category_name }}</strong>
+                                                    <strong>
+                                                        @if ($jobTypeForThisCategory && !empty($jobTypeForThisCategory->rename))
+                                                            {{ $jobTypeForThisCategory->rename }}
+                                                        @else
+                                                            {{ $category->category_name }}
+                                                        @endif
+                                                    </strong>
                                                 </td>
                                                 <td class="text-end">
                                                     <strong>Rp
@@ -94,12 +107,7 @@
                                                         data-bs-target="#editCategoryModal-{{ $category->category_id }}">
                                                         <i class="bi bi-pencil-square h5"></i>
                                                     </button>
-                                                    @php
-                                                        // Ambil job_type spesifik untuk kategori ini dan project_type yang sedang aktif
-                                                        $jobTypeForThisCategory = $category->job_types
-                                                            ->where('type_id', $type->type_id)
-                                                            ->first();
-                                                    @endphp
+
                                                     @if ($jobTypeForThisCategory)
                                                         <a
                                                             href="{{ route('jobs.selectJob', ['jobtype_id' => $jobTypeForThisCategory->jobtype_id, 'type_id' => $type->type_id]) }}">
@@ -111,11 +119,53 @@
                                                 </td>
                                             </tr>
 
+                                            <!-- Modal Edit Nama Kategori -->
+                                            <div class="modal fade"
+                                                id="editCategoryModal-{{ $jobTypeForThisCategory->jobtype_id }}"
+                                                tabindex="-1" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <form method="POST"
+                                                        action="{{ route('rab.renameCategory', $jobTypeForThisCategory->jobtype_id) }}">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <div class="modal-content">
+                                                            <div class="modal-header bg-warning text-dark">
+                                                                <h5 class="modal-title">Edit Nama Kategori</h5>
+                                                                <button type="button" class="btn-close"
+                                                                    data-bs-dismiss="modal" aria-label="Tutup"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <div class="mb-3">
+                                                                    <input type="text" name="jobtype_id"
+                                                                        value="{{ $jobTypeForThisCategory->jobtype_id }}"
+                                                                        hidden>
+                                                                    <label for="rename" class="form-label">Nama
+                                                                        Pekerjaan</label>
+                                                                    <input type="text" class="form-control"
+                                                                        name="rename"
+                                                                        value="{{ $jobTypeForThisCategory->rename ?? $category->category_name }}"
+                                                                        required>
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary"
+                                                                    data-bs-dismiss="modal">Batal
+                                                                </button>
+                                                                <button type="submit"
+                                                                    onclick="return confirm('Yakin ingin mengubah nama kategori ini?')"
+                                                                    class="btn btn-warning">Simpan
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+
                                             @foreach ($category->job_types->where('type_id', $type->type_id) as $jobType)
                                                 @foreach ($jobType->sub_jobs as $sub)
                                                     <tr>
                                                         <td class="text-center">{{ $no++ }}</td>
-                                                        <td>{{ $sub->job->job_name }}</td>
+                                                        <td>{{ $sub->rename ?? $sub->job->job_name }}</td>
                                                         <td class="text-center">{{ $sub->total_volume }}</td>
                                                         <td class="text-center">{{ $sub->job->satuan_volume }}</td>
                                                         <td class="text-end">
@@ -149,7 +199,7 @@
                                                                     </li>
                                                                     <li>
                                                                         <form
-                                                                            action="{{ route('jobs.destroy', $sub->job_id) }}"
+                                                                            action="{{ route('rab.deleteJob', $sub->sub_job_id) }}"
                                                                             method="POST"
                                                                             onsubmit="return confirm('Yakin ingin menghapus pekerjaan ini?')">
                                                                             @csrf
@@ -162,47 +212,39 @@
                                                             </div>
                                                         </td>
                                                     </tr>
-                                                    <div class="modal fade" id="editJobModal-{{ $sub->job_id }}"
+
+                                                    <!-- Modal Edit Pekerjaan -->
+                                                    <div class="modal fade" id="editJobModal-{{ $sub->sub_job_id }}"
                                                         tabindex="-1"
-                                                        aria-labelledby="editJobModalLabel-{{ $sub->job_id }}"
+                                                        aria-labelledby="editJobModalLabel-{{ $sub->sub_job_id }}"
                                                         aria-hidden="true">
                                                         <div class="modal-dialog">
                                                             <form method="POST"
-                                                                action="{{ route('jobs.update', $sub->job_id) }}">
+                                                                action="{{ route('rab.renameJob', $sub->sub_job_id) }}">
                                                                 @csrf
                                                                 @method('PUT')
                                                                 <div class="modal-content">
                                                                     <div class="modal-header bg-success text-white">
                                                                         <h5 class="modal-title"
-                                                                            id="editJobModalLabel-{{ $sub->job_id }}">
-                                                                            Edit Pekerjaan - {{ $sub->job_name }}
+                                                                            id="editJobModalLabel-{{ $sub->sub_job_id }}">
+                                                                            Edit Pekerjaan -
+                                                                            {{ $sub->job->job_name }}
                                                                         </h5>
                                                                         <button type="button" class="btn-close"
                                                                             data-bs-dismiss="modal"
                                                                             aria-label="Tutup"></button>
                                                                     </div>
+                                                                    <input type="hidden" name="sub_job_id"
+                                                                        value="{{ $sub->sub_job_id }}">
                                                                     <div class="modal-body">
                                                                         <div class="mb-3">
-                                                                            <label for="job_name"
+                                                                            <label for="rename"
                                                                                 class="form-label">Nama
                                                                                 Pekerjaan</label>
-                                                                            <input type="text" name="job_name"
+                                                                            <input type="text" name="rename"
                                                                                 class="form-control" required
-                                                                                value="{{ $sub->job_name }}">
+                                                                                value="{{ $sub->rename ?? $sub->job->job_name }}">
                                                                         </div>
-                                                                        <div class="mb-3">
-                                                                            <label for="satuan_volume"
-                                                                                class="form-label">Satuan</label>
-                                                                            <input type="text" name="satuan_volume"
-                                                                                class="form-control" required
-                                                                                value="{{ $sub->satuan_volume }}">
-                                                                        </div>
-                                                                        <input type="hidden" name="category_id"
-                                                                            value="{{ $sub->category_id }}">
-                                                                        <input type="hidden" name="total_cost"
-                                                                            value="{{ $sub->total_cost }}">
-                                                                        <input type="hidden" name="total_volume"
-                                                                            value="{{ $sub->total_volume }}">
                                                                     </div>
                                                                     <div class="modal-footer">
                                                                         <button type="button"
@@ -271,27 +313,11 @@
                                                     ->flatMap(fn($jobType) => $jobType->sub_jobs)
                                                     ->sum(fn($sub) => $sub->total_volume * $sub->job_cost);
                                             });
-                                            $ppn = $totalHarga * 0.1;
-                                            $totalAkhir = $totalHarga + $ppn;
                                         @endphp
                                         <tr>
-                                            <td colspan="5" class="text-end"><strong>JUMLAH HARGA</strong></td>
+                                            <td colspan="5" class="text-end"><strong>TOTAL BIAYA</strong></td>
                                             <td class="text-end"><strong>Rp
                                                     {{ number_format($totalHarga, 0, ',', '.') }}</strong></td>
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="5" class="text-end"><strong>PAJAK 10.00
-                                                    %</strong>
-                                            </td>
-                                            <td class="text-end"><strong>Rp
-                                                    {{ number_format($ppn, 0, ',', '.') }}</strong></td>
-                                            <td></td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="5" class="text-end"><strong>TOTAL HARGA</strong></td>
-                                            <td class="text-end"><strong>Rp
-                                                    {{ number_format($totalAkhir, 0, ',', '.') }}</strong></td>
                                             <td></td>
                                         </tr>
                                     </tbody>
@@ -301,7 +327,7 @@
                                 <form action="{{ route('rab.updateBudgetPlan', ['type_id' => $type->type_id]) }}"
                                     method="POST">
                                     @csrf
-                                    <input type="hidden" name="budget_plan" value="{{ $totalAkhir }}">
+                                    <input type="hidden" name="budget_plan" value="{{ $totalHarga }}">
                                     <input type="hidden" name="project_id"
                                         value="{{ $type->project->project_id }}">
                                     <button type="submit" class="btn btn-success">Selesai</button>

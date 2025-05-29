@@ -25,21 +25,24 @@ use App\Http\Controllers\RoleAccessController;
 
 Route::get('/', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout.post');
 
 // =============== Role: KEUANGAN & TEKNIK ===============
 Route::middleware(['role:keuangan|teknik'])->group(function () {
+    Route::resource('unit_reports', UnitReportController::class);
     Route::resource('projects', ProjectController::class);
     Route::resource('project-types', ProjectTypeController::class);
+    //Copy RAB
+    Route::post('/project-types/{type_id}/copy-rab', [ProjectTypeController::class, 'copyRAB'])->name('project-types.copy-rab');
 });
 
 // =============== Role: KEUANGAN & SITE ADMIN ===============
-Route::middleware(['role:keuangan|site-admin'])->group(function () {
+Route::middleware(['role:keuangan|site-admin|teknik'])->group(function () {
     Route::resource('houses', HouseController::class);
 });
 
 // =============== Role: KEUANGAN SAJA ===============
 Route::middleware(['role:keuangan'])->group(function () {
-    Route::resource('unit_reports', UnitReportController::class);
     Route::resource('role-access', RoleAccessController::class);
 });
 
@@ -62,6 +65,12 @@ Route::middleware(['role:teknik'])->group(function () {
 
     // routes/web.php
     Route::post('/rab/{type_id}/update-budget-plan', [RabController::class, 'updateBudgetPlan'])->name('rab.updateBudgetPlan');
+    Route::put('/rab/{type_id}/rename-category', [RabController::class, 'renameCategory'])->name('rab.renameCategory');
+    Route::delete('/rab/{sub_job_id}/delete-job', [RabController::class, 'deleteJob'])->name('rab.deleteJob');
+    Route::put('/rab/{sub_job_id}/rename-job', [RabController::class, 'renameJob'])->name('rab.renameJob');
+
+    // Cetak RAB
+    Route::get('/rab/{type_id}/cetak', [RABController::class, 'viewPDF'])->name('rab.viewPDF');
 
 
     Route::prefix('jobs/{sub_job_id}')->group(function () {

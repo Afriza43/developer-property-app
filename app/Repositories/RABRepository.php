@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Models\JobType;
 use App\Models\JobCategory;
 use App\Models\ProjectType;
+use App\Models\SubJob;
 use Illuminate\Support\Facades\DB;
 use App\Repositories\Interfaces\RABRepositoryInterface;
 
@@ -84,17 +85,12 @@ class RABRepository implements RABRepositoryInterface
         return $category;
     }
 
-    public function deleteJobCategory($id)
+    public function deleteJobCategory($jobtype_id)
     {
-        $category = $this->getJobCategory($id);
+        // Hapus job_type berdasarkan jobtype_id
+        DB::table('job_types')->where('jobtype_id', $jobtype_id)->delete();
 
-        // Hapus dari pivot job_types
-        DB::table('job_types')->where('category_id', $category->category_id)->delete();
-
-        // Hapus kategori dari master
-        $category->delete();
-
-        return $category;
+        return response()->json(['message' => 'Kategori berhasil dihapus.']);
     }
 
     public function updateBudgetPlan($typeId, $budgetPlan)
@@ -106,19 +102,41 @@ class RABRepository implements RABRepositoryInterface
         return $projectType;
     }
 
-    public function updatePivotCategoryName($typeId, $categoryId, $newName)
+    public function renameCategory($jobtype_id, $newName)
     {
-        return DB::table('job_types')
-            ->where('type_id', $typeId)
-            ->where('category_id', $categoryId)
-            ->update(['rename' => $newName, 'updated_at' => now()]);
+        $jobType = JobType::findOrFail($jobtype_id);
+        $jobType->rename = $newName;
+        $jobType->save();
     }
 
-    public function getPivotCategoryName($typeId, $categoryId)
+    public function renameJob($sub_job_id, $newName)
+    {
+        $subJob = SubJob::findOrFail($sub_job_id);
+        $subJob->rename = $newName;
+        dd($subJob->rename);
+        $subJob->save();
+    }
+
+    public function getNewCategoryName($jobtype_id)
     {
         return DB::table('job_types')
-            ->where('type_id', $typeId)
-            ->where('category_id', $categoryId)
+            ->where('jobtype_id', $jobtype_id)
             ->value('rename');
+    }
+
+    public function getNewJobName($sub_job_id)
+    {
+        return DB::table('sub_jobs')
+            ->where('sub_job_id', $sub_job_id)
+            ->value('rename');
+    }
+
+
+    public function deleteJob($id)
+    {
+        $job = SubJob::where('sub_job_id', $id)->first();
+        $job->delete();
+
+        return $job;
     }
 }

@@ -6,11 +6,6 @@
                     <h3>Laporan Pengeluaran Pembangunan Rumah</h3>
                     <p class="text-subtitle text-muted">{{ $house->name }}</p>
                 </div>
-                <div class="col-12 col-md-6 order-md-2 order-first">
-                    <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
-                        <h7>User</h7>
-                    </nav>
-                </div>
             </div>
         </div>
         <section class="section">
@@ -52,7 +47,7 @@
                                                     <button class="btn btn-primary" type="button"
                                                         data-bs-toggle="modal"
                                                         data-bs-target="#previewImage-{{ $expense->expense_id }}">
-                                                        <i class="bi bi-eye h5"></i>
+                                                        <i class="bi bi-eye"></i>
                                                     </button>
                                                 </td>
                                             </tr>
@@ -86,11 +81,10 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="button">
-                                <div class="buttons">
-                                    <a href="{{ route('houses.index', ['project_id' => $house->project->project_id]) }}"
-                                        class="btn btn-danger">Kembali</a>
-                                </div>
+
+                            <div class="d-flex justify-content-center mt-2 mb-3">
+                                <a href="{{ route('houses.index', ['project_id' => $house->project->project_id]) }}"
+                                    class="btn btn-secondary">Kembali</a>
                             </div>
                         </div>
                     </div>

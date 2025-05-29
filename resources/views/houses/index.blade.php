@@ -89,7 +89,9 @@
                                 <th class="text-center">No</th>
                                 <th class="text-center">Unit Rumah</th>
                                 <th class="text-center">Tipe Rumah</th>
-                                <th class="text-center">Total Biaya</th>
+                                <th class="text-center">Anggaran</th>
+                                <th class="text-center">Pengeluaran</th>
+                                <th class="text-center">Status</th>
                                 <th class="text-center">Aksi</th>
                             </tr>
                         </thead>
@@ -101,8 +103,23 @@
                                     <td class="text-center">{{ $house->name }}</td>
                                     <td class="text-center">{{ $house->type }}</td>
                                     <td class="text-center">
+                                        {{ 'Rp ' . number_format($house->budget_plan, 0, ',', '.') }}
+                                    </td>
+                                    <td class="text-center">
                                         {{ $house->house_cost !== null ? 'Rp ' . number_format($house->house_cost, 0, ',', '.') : 'Rp 0' }}
                                     </td>
+                                    <td class="text-center">
+                                        @php
+                                            $profit = $house->profit_loss;
+                                            $isLoss = $profit < 0;
+                                            $class = $isLoss ? 'bg-danger text-white' : 'bg-success text-white';
+                                            $label = $isLoss ? 'Rugi' : 'Untung';
+                                        @endphp
+                                        <span class="badge {{ $class }}">
+                                            {{ $label }}: Rp {{ number_format(abs($profit), 0, ',', '.') }}
+                                        </span>
+                                    </td>
+
                                     <td class="text-center">
                                         @role('site-admin')
                                             <a href="{{ route('expenses.index', ['house_id' => $house->house_id]) }}">
@@ -111,12 +128,14 @@
                                                 </button>
                                             </a>
                                         @endrole
-                                        @role('keuangan')
+                                        @role('keuangan|teknik')
                                             <a href="{{ route('houses.show', $house->house_id) }}">
                                                 <button type="button" class="btn btn-primary bg-blue">
                                                     <i class="bi bi-file-earmark-bar-graph-fill"></i>
                                                 </button>
                                             </a>
+                                        @endrole
+                                        @role('keuangan')
                                             <button type="button" data-bs-toggle="modal"
                                                 data-bs-target="#editHouseModal-{{ $house->house_id }}"
                                                 class="btn btn-warning">
@@ -147,8 +166,8 @@
                                                         <h5 class="modal-title"
                                                             id="editHouseModal-{{ $house->house_id }}Label">Edit Rumah
                                                         </h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                            aria-label="Tutup"></button>
+                                                        <button type="button" class="btn-close"
+                                                            data-bs-dismiss="modal" aria-label="Tutup"></button>
                                                     </div>
                                                     <div class="modal-body">
                                                         <div class="mb-3">
@@ -167,10 +186,18 @@
                                                         </div>
                                                         <div class="mb-3">
                                                             <label for="edit_type" class="form-label">Tipe</label>
-                                                            <input type="text" class="form-control" id="edit_type"
-                                                                name="type" maxlength="8"
-                                                                placeholder="Tipe Rumah.."
-                                                                value="{{ $house->type }}">
+                                                            <select class="form-control" id="edit_type"
+                                                                name="type">
+                                                                <option value="{{ $house->type }}" disabled selected>
+                                                                    {{ $house->type }}</option>
+                                                                @foreach ($project->project_types as $projectType)
+                                                                    <option value="{{ $projectType->type }}"
+                                                                        data-identifier="{{ $projectType->identifier }}">
+                                                                        {{ $projectType->type }}
+                                                                        {{ $projectType->identifier ? '(' . $projectType->identifier . ')' : '' }}
+                                                                    </option>
+                                                                @endforeach
+                                                            </select>
                                                         </div>
                                                         <input type="hidden" class="form-control" id="project_id"
                                                             name="project_id" value="{{ $project->project_id }}">
@@ -192,6 +219,13 @@
                             @endforeach
                         </tbody>
                     </table>
+                    @role('keuangan|teknik')
+                        <div class="d-flex justify-content-center mt-2 mb-3">
+                            <a href="{{ route('projects.index') }}">
+                                <button type="submit" class="btn btn-secondary">Kembali</button>
+                            </a>
+                        </div>
+                    @endrole
                 </div>
             </div>
         </section>
@@ -225,10 +259,15 @@
                             <select class="form-control" id="type" name="type">
                                 <option value="" disabled selected>Pilih Tipe Rumah...</option>
                                 @foreach ($project->project_types as $projectType)
-                                    <option value="{{ $projectType->type }}">{{ $projectType->type }}</option>
+                                    <option value="{{ $projectType->type }}"
+                                        data-identifier="{{ $projectType->identifier }}">
+                                        {{ $projectType->type }}
+                                        {{ $projectType->identifier ? '(' . $projectType->identifier . ')' : '' }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
+
                         <input type="hidden" class="form-control" id="project_id" name="project_id"
                             value="{{ $project->project_id }}">
                         <input type="hidden" class="form-control" id="house_cost" name="house_cost">

@@ -52,10 +52,16 @@ class RABController extends Controller
         return redirect()->back()->with('success', 'RAB updated successfully.');
     }
 
-    public function destroy($categoryId)
+    public function destroy($jobTypeId)
     {
-        $this->rabRepository->deleteJobCategory($categoryId);
-        return redirect()->back()->with('success', 'RAB deleted successfully.');
+        $this->rabRepository->deleteJobCategory($jobTypeId);
+        return redirect()->back()->with('success', 'Job Category deleted successfully.');
+    }
+
+    public function deleteJob($subJobId)
+    {
+        $this->rabRepository->deleteJob($subJobId);
+        return redirect()->back()->with('success', 'Job deleted successfully.');
     }
 
     public function updateBudgetPlan(Request $request, $typeId)
@@ -72,20 +78,41 @@ class RABController extends Controller
     }
 
 
-    public function updatePivotCategoryName(Request $request)
+    public function renameCategory(Request $request)
     {
         $request->validate([
-            'type_id' => 'required|exists:project_types,type_id',
-            'category_id' => 'required|exists:job_categories,category_id',
+            'jobtype_id' => 'required|exists:job_types,jobtype_id',
             'rename' => 'required|string|max:50',
         ]);
 
-        $this->rabRepository->updatePivotCategoryName(
-            $request->type_id,
-            $request->category_id,
+        $this->rabRepository->renameCategory(
+            $request->jobtype_id,
             $request->rename
         );
 
         return redirect()->back()->with('success', 'Nama kategori berhasil diubah.');
+    }
+
+    public function renameJob(Request $request)
+    {
+        $request->validate([
+            'sub_job_id' => 'required|exists:sub_jobs,sub_job_id',
+            'rename' => 'required|string|max:50',
+        ]);
+
+        $this->rabRepository->renameJob(
+            $request->sub_job_id,
+            $request->rename
+        );
+
+        return redirect()->back()->with('success', 'Nama pekerjaan berhasil diubah.');
+    }
+
+    public function viewPDF($typeId)
+    {
+        $data = $this->rabRepository->getRAB($typeId);
+        $mpdf = new \Mpdf\Mpdf();
+        $mpdf->WriteHTML(view('rab.pdf', $data));
+        $mpdf->Output();
     }
 }
