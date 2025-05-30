@@ -34,6 +34,9 @@ Route::middleware(['role:keuangan|teknik'])->group(function () {
     Route::resource('project-types', ProjectTypeController::class);
     //Copy RAB
     Route::post('/project-types/{type_id}/copy-rab', [ProjectTypeController::class, 'copyRAB'])->name('project-types.copy-rab');
+
+    // Laporan Pembangunan
+    Route::get('/report/{house_id}/export-pdf', [UnitReportController::class, 'exportPDF'])->name('report.exportPDF');
 });
 
 // =============== Role: KEUANGAN & SITE ADMIN ===============

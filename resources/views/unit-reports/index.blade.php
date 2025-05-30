@@ -1,9 +1,9 @@
-<x-layout-report title="Laporan Pengeluaran Pembangunan">
+<x-layout-report title="Laporan Pembangunan">
     <div>
         <div class="page-title">
             <div class="row">
                 <div class="col-12 col-md-6 order-md-1 order-last mb-3">
-                    <h3>Laporan Pengeluaran Pembangunan Rumah</h3>
+                    <h3>Laporan Pembangunan Rumah</h3>
                     <p class="text-subtitle text-muted">Rumah {{ $house->name }}</p>
                 </div>
             </div>
@@ -13,8 +13,6 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header text-center">
-
-                            {{-- Dropdown untuk memilih laporan --}}
                             <form method="GET" action="{{ route('houses.show', $house->house_id) }}">
                                 <select name="type" class="form-select w-50 mx-auto" onchange="this.form.submit()">
                                     <option value="">-- Pilih Jenis Laporan --</option>
@@ -43,7 +41,8 @@
                                             @foreach ($expenseReports as $expense)
                                                 <tr>
                                                     <td class="text-bold-500">{{ $expense->description }}</td>
-                                                    <td>{{ number_format($expense->total_expense, 0, ',', '.') }}</td>
+                                                    <td>{{ number_format($expense->total_expense, 0, ',', '.') }}
+                                                    </td>
                                                     <td>{{ $expense->purchase_date }}
                                                     </td>
                                                     <td>
@@ -83,6 +82,12 @@
                                             @endforeach
                                         </tbody>
                                     </table>
+                                </div>
+                                <div class="text-end">
+                                    <a href="{{ route('report.exportPDF', ['type' => 'expenses', 'house_id' => $house->house_id]) }}"
+                                        class="btn btn-success">
+                                        Cetak Laporan
+                                    </a>
                                 </div>
                             @elseif ($type === 'progress')
                                 {{-- Tabel Laporan Progres --}}
@@ -125,7 +130,8 @@
                                                             <div class="modal-header">
                                                                 <h5 class="modal-title"
                                                                     id="galleryModal{{ $progress->progress_reports_id }}Title">
-                                                                    Foto Progres Minggu ke-{{ $progress->period }}</h5>
+                                                                    Foto Progres Minggu ke-{{ $progress->period }}
+                                                                </h5>
                                                                 <button type="button" class="close"
                                                                     data-bs-dismiss="modal" aria-label="Close">
                                                                     <i data-feather="x"></i>
@@ -184,7 +190,8 @@
                                                                         </a>
                                                                     </div>
                                                                 @else
-                                                                    <p class="text-center text-muted">Tidak ada foto
+                                                                    <p class="text-center text-muted">Tidak ada
+                                                                        foto
                                                                         untuk
                                                                         ditampilkan.</p>
                                                                 @endif
@@ -203,19 +210,26 @@
                                         </tbody>
                                     </table>
                                 </div>
+                                <div class="text-end">
+                                    <a href="{{ route('report.exportPDF', ['type' => 'progress', 'house_id' => $house->house_id]) }}"
+                                        class="btn btn-success">
+                                        Cetak Laporan
+                                    </a>
+                                </div>
                             @else
                                 <div class="alert alert-dark text-center">
                                     Silahkan pilih jenis laporan terlebih dahulu.
                                 </div>
                             @endif
-                            <div class="d-flex justify-content-center mt-3">
-                                <a href="{{ route('houses.index', ['project_id' => $house->project->project_id]) }}"
-                                    class="btn btn-secondary">Kembali</a>
-                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
+
+        <div class="d-flex justify-content-center mt-3">
+            <a href="{{ route('houses.index', ['project_id' => $house->project->project_id]) }}"
+                class="btn btn-secondary">Kembali</a>
+        </div>
     </div>
 </x-layout-report>

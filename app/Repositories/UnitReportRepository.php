@@ -11,13 +11,13 @@ class UnitReportRepository implements UnitReportRepositoryInterface
 {
     public function getProgressReports($id)
     {
-        $progressReports = ProgressReport::where('house_id', $id)->get();
+        $progressReports = ProgressReport::with(['progress_photos', 'house.project'])->where('house_id', $id)->orderBy('period', 'asc')->get();
         return $progressReports;
     }
 
     public function getExpenseReports($id)
     {
-        $expenseReports = ExpenseReport::where('house_id', $id)->get();
+        $expenseReports = ExpenseReport::with('house.project')->where('house_id', $id)->orderBy('purchase_date', 'asc')->get();
         return $expenseReports;
     }
 
