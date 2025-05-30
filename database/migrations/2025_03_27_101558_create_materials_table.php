@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('materials', function (Blueprint $table) {
             $table->id('material_id');
-            $table->string('material_name', 25);
+            $table->string('material_name', 25)->unique();
             $table->string('description', 50);
             $table->char('material_unit', length: 5);
         });

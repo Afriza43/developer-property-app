@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('equipments', function (Blueprint $table) {
             $table->id('equipment_id');
             $table->string('description', 50);
-            $table->string('equipment_name', 20);
+            $table->string('equipment_name', 20)->unique();
             $table->char('equipment_unit', length: 5);
         });
 

@@ -49,6 +49,7 @@ class ProjectController extends Controller
             'project_name' => 'required',
             'location' => 'required',
             'year' => 'required|digits:4|integer',
+            'capacity' => 'integer|digits:3',
             'total_cost' => 'nullable',
             'image' => 'image|file|max:5000',
         ]);
@@ -89,6 +90,7 @@ class ProjectController extends Controller
             'project_name' => 'required',
             'location' => 'required',
             'year' => 'required|digits:4|integer',
+            'capacity' => 'integer|digits:3',
             'total_cost' => 'nullable',
             'image' => 'nullable|image|file|max:5000',
         ]);

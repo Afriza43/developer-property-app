@@ -18,14 +18,11 @@ class RABRepository implements RABRepositoryInterface
 
     public function getJobsByTypeId($typeId)
     {
-        // Dapatkan job_categories yang memiliki job_types terkait dengan project_type ini
         $jobCategories = JobCategory::with([
             'job_types' => function ($query) use ($typeId) {
-                // Filter job_types untuk project_type tertentu
                 $query->where('type_id', $typeId);
             },
             'job_types.sub_jobs' => function ($query) {
-                // Ambil sub_jobs yang terkait dengan job_types yang sudah difilter di atas
                 $query->orderBy('sub_job_id');
             },
             'job_types.sub_jobs.job' => function ($query) {
@@ -33,7 +30,6 @@ class RABRepository implements RABRepositoryInterface
             }
         ])
             ->whereHas('job_types', function ($query) use ($typeId) {
-                // Pastikan hanya mengambil job_categories yang memiliki relasi dengan project_type ini
                 $query->where('type_id', $typeId);
             })
             ->get();
@@ -130,7 +126,6 @@ class RABRepository implements RABRepositoryInterface
             ->where('sub_job_id', $sub_job_id)
             ->value('rename');
     }
-
 
     public function deleteJob($id)
     {

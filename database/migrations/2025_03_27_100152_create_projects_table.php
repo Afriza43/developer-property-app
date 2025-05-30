@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('projects', function (Blueprint $table) {
             $table->id('project_id');
-            $table->string('project_name', 35);
+            $table->string('project_name', 35)->unique();
             $table->string('location', 15);
             $table->year('year');
+            $table->integer('capacity');
             $table->decimal('total_cost', 13)->nullable();
             $table->string('image')->nullable();
         });

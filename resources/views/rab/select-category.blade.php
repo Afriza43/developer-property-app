@@ -1,5 +1,5 @@
-<x-layout-rab title="Daftar Kategori Pekerjaan">
-    <x-requirement pageName="Daftar Kategori Pekerjaan">
+<x-layout-rab title="Daftar Pekerjaan">
+    <x-requirement pageName="Daftar Pekerjaan">
         <div class="card">
             <div class="card-header">
                 <div class="row">
@@ -42,7 +42,9 @@
                             <table class="table table-bordered">
                                 <thead class="text-center">
                                     <tr>
-                                        <th>Pilih</th>
+                                        <th class="text-center">
+                                            <input type="checkbox" id="select-all" style="transform: scale(1.5)">
+                                        </th>
                                         <th>Nama Kategori</th>
                                         <th>Aksi</th>
                                     </tr>
@@ -137,8 +139,29 @@
                         <div class="modal-body">
                             <div class="mb-3">
                                 <label for="category_name" class="form-label">Nama Pekerjaan</label>
-                                <input type="text" class="form-control" id="category_name" name="category_name"
-                                    required>
+                                <input type="text" class="form-control" id="category_name"
+                                    @error('category_name')
+                                    is-invalid
+                                @enderror
+                                    name="category_name" placeholder="Nama Pekerjaan.." required>
+                                <span class="text-danger">
+                                    @error('category_name')
+                                        {{ $message }}
+                                    @enderror
+                                </span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="classification" class="form-label">Kategori</label>
+                                <select class="form-control" id="classification" name="classification" required>
+                                    <option>Pilih Kategori..</option>
+                                    <option value="Konstruksi">
+                                        Konstruksi</option>
+                                    <option value="Sarana">Sarana
+                                    </option>
+                                    <option value="Prasarana">Prasarana
+                                    </option>
+                                </select>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -173,6 +196,20 @@
                                     <input type="text" class="form-control" id="category_name"
                                         name="category_name" value="{{ $category->category_name }}" required>
                                 </div>
+                                <div class="mb-3">
+                                    <label for="classification" class="form-label">Kategori</label>
+                                    <select class="form-control" id="classification" name="classification" required>
+                                        <option value="Konstruksi"
+                                            {{ $category->classification == 'Konstruksi' ? 'selected' : '' }}>
+                                            Konstruksi</option>
+                                        <option value="Sarana"
+                                            {{ $category->classification == 'Sarana' ? 'selected' : '' }}>Sarana
+                                        </option>
+                                        <option value="Prasarana"
+                                            {{ $category->classification == 'Prasarana' ? 'selected' : '' }}>Prasarana
+                                        </option>
+                                    </select>
+                                </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="submit" class="btn btn-success">Simpan</button>
@@ -185,4 +222,16 @@
             </div>
         @endforeach
     </x-requirement>
+    @push('scripts')
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const selectAllCheckbox = document.getElementById('select-all');
+                const checkboxes = document.querySelectorAll('input[name="categories[]"]');
+
+                selectAllCheckbox.addEventListener('change', function() {
+                    checkboxes.forEach(cb => cb.checked = this.checked);
+                });
+            });
+        </script>
+    @endpush
 </x-layout-rab>

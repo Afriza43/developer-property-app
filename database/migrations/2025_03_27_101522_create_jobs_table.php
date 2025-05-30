@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('jobs', function (Blueprint $table) {
             $table->id('job_id');
-            $table->string('job_name', 30);
+            $table->string('job_name', 30)->unique();
             $table->char('satuan_volume', 5)->nullable();
         });
 
@@ -22,6 +22,8 @@ return new class extends Migration
             $table->string('name', 15);
             $table->string('type', 8);
             $table->decimal('budget_plan', 12)->nullable();
+            $table->string('identifier', 15)->nullable();
+            $table->decimal('land_price', 12)->nullable();
             $table->string('image')->nullable();
             $table->foreignId('project_id')->constrained('projects', 'project_id')->onDelete('cascade');
         });

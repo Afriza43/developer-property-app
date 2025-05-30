@@ -68,6 +68,8 @@ Route::middleware(['role:teknik'])->group(function () {
     Route::put('/rab/{type_id}/rename-category', [RabController::class, 'renameCategory'])->name('rab.renameCategory');
     Route::delete('/rab/{sub_job_id}/delete-job', [RabController::class, 'deleteJob'])->name('rab.deleteJob');
     Route::put('/rab/{sub_job_id}/rename-job', [RabController::class, 'renameJob'])->name('rab.renameJob');
+    Route::put('/rab/{type_id}/land-price', [ProjectTypeController::class, 'updateLandPrice'])->name('project-types.updateLandPrice');
+
 
     // Cetak RAB
     Route::get('/rab/{type_id}/cetak', [RABController::class, 'viewPDF'])->name('rab.viewPDF');
@@ -118,4 +120,6 @@ Route::middleware(['role:teknik'])->group(function () {
 
     Route::post('/jobs/select/{jobtype_id}/addJob', [SubJobController::class, 'addJob'])->name('jobs.addJob');
     Route::put('/jobs/updateJob/{job_id}', [SubJobController::class, 'updateJob'])->name('jobs.updateJob');
+    Route::put('/jobs/updatePrasarana/{sub_job_id}', [SubJobController::class, 'updatePrasarana'])
+        ->name('subjobs.updatePrasarana');
 });

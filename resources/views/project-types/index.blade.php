@@ -56,7 +56,7 @@
                                     </li>
                                     <li class="list-group-item card-text py-1">
                                         <i class="bi bi-cash"></i> Total Anggaran:
-                                        {{ number_format($type->total_budget, 0, ',', '.') }}
+                                        {{ number_format($type->budget_plan, 0, ',', '.') }}
                                     </li>
                                 </ul>
                                 <hr>
@@ -169,7 +169,7 @@
                 @csrf
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="addTypeModalLabel">Edit Tipe Rumah
+                        <h5 class="modal-title" id="addTypeModalLabel">Tambah Tipe Rumah
                         </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                             aria-label="Tutup"></button>

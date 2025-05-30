@@ -139,7 +139,7 @@
                                     <i class="bi bi-calendar-fill me-2"></i> Tahun: {{ $project->year }}
                                 </li>
                                 <li class="list-group-item card-text py-1">
-                                    <i class="bi bi-house-fill me-2"></i> Jumlah Unit: 5
+                                    <i class="bi bi-house-fill me-2"></i> Kapasitas Unit: {{ $project->capacity }}
                                 </li>
                             </ul>
                             <hr>
@@ -207,6 +207,11 @@
                                             value="{{ $project->year }}" placeholder="Tahun...">
                                     </div>
                                     <div class="mb-3">
+                                        <label for="capacity" class="form-label">Kapasitas Rumah</label>
+                                        <input type="number" class="form-control" id="capacity" name="capacity"
+                                            value="{{ $project->capacity }}" placeholder="Kapasitas Rumah...">
+                                    </div>
+                                    <div class="mb-3">
                                         <label for="image">Upload Gambar</label>
                                         <input type="file" name="image"
                                             class="form-control @error('image') is-invalid @enderror" id="image">
@@ -271,6 +276,11 @@
                             <label for="year" class="form-label">Tahun</label>
                             <input type="text" class="form-control" id="year" name="year"
                                 placeholder="Tahun...">
+                        </div>
+                        <div class="mb-3">
+                            <label for="capacity" class="form-label">Kapasitas Rumah</label>
+                            <input type="number" class="form-control" id="capacity" name="capacity"
+                                placeholder="Kapasitas Rumah...">
                         </div>
                         <div class="mb-3">
                             <label for="image">Upload Gambar</label>

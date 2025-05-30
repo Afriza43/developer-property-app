@@ -149,4 +149,17 @@ class ProjectTypeController extends Controller
             return redirect()->back()->with('error', 'Gagal menyalin RAB: ' . $e->getMessage());
         }
     }
+
+    public function updateLandPrice(Request $request, $id)
+    {
+        $request->validate([
+            'land_price' => 'required|numeric|min:0',
+        ]);
+
+        $type = ProjectType::findOrFail($id);
+        $type->land_price = $request->land_price;
+        $type->save();
+
+        return back()->with('success', 'Harga tanah berhasil diperbarui.');
+    }
 }

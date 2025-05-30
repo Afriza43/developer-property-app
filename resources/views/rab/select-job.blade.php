@@ -18,7 +18,7 @@
                             method="GET">
                             <div class="input-group mb-3">
                                 <input type="text" name="search" class="form-control"
-                                    placeholder="Cari kategori pekerjaan..." aria-label="Cari kategori pekerjaan..."
+                                    placeholder="Cari sub pekerjaan..." aria-label="Cari sub pekerjaan..."
                                     value="{{ request('search') }}">
                                 <button class="btn btn-outline-secondary" type="submit" id="button-search-equipment">
                                     <i class="bi bi-search h5"></i>

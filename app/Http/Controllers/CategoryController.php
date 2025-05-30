@@ -61,6 +61,7 @@ class CategoryController extends Controller
     {
         $validated = $request->validate([
             'category_name' => 'required|string|max:30',
+            'classification' => 'required|string|max:15',
         ]);
 
         JobCategory::create($validated);

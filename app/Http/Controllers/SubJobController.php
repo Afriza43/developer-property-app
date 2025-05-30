@@ -121,4 +121,16 @@ class SubJobController extends Controller
         Job::find($jobId)->delete();
         return redirect()->back()->with('success', 'Job deleted successfully.');
     }
+
+    public function updatePrasarana(Request $request, $subJobId)
+    {
+        $subJob = SubJob::where('sub_job_id', $subJobId)->first();
+
+        $subJob->total_volume = $request->input('total_volume');
+        $subJob->job_cost = $request->input('job_cost');
+
+        $subJob->save();
+
+        return back()->with('success', 'Data berhasil diperbarui.');
+    }
 }

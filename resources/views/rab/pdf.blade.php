@@ -17,27 +17,40 @@
                 <td class="label">PEKERJAAN</td>
                 <td>
                     :
-                    <span id="pekerjaan">BANGUNAN RUMAH T.36/72</span>
+                    <span id="pekerjaan">BANGUNAN RUMAH T.{{ $type->type }}</span>
                 </td>
             </tr>
             <tr>
                 <td class="label">LOKASI PROYEK</td>
                 <td>
                     :
-                    <span id="lokasi1">Pamulihan Regency</span><br />
+                    <span id="lokasi1">{{ $type->project->project_name }}</span><br />
                     :
-                    <span id="lokasi2">Ds. Pamulihan, Kec. Pamulihan, Kab. Sumedang</span>
+                    <span id="lokasi2">{{ $type->project->location }}</span>
                 </td>
             </tr>
             <tr>
                 <td class="label">TAHUN</td>
                 <td>
                     :
-                    <span id="tahun">2024</span>
+                    <span id="tahun">{{ $type->project->year }}</span>
                 </td>
             </tr>
         </table>
     </div>
+    @php
+        $totalsByClassification = collect($jobCategories)
+            ->groupBy('classification')
+            ->map(function ($categories) use ($type) {
+                return $categories
+                    ->flatMap(function ($category) use ($type) {
+                        return $category->job_types
+                            ->where('type_id', $type->type_id)
+                            ->flatMap(fn($jobType) => $jobType->sub_jobs);
+                    })
+                    ->sum(fn($sub) => $sub->total_volume * $sub->job_cost);
+            });
+    @endphp
 
     <table class="main-table">
         <thead>
@@ -59,16 +72,16 @@
                 <td class="center"></td>
             </tr>
             <tr>
-                <td class="center">I</td>
+                <td class="center">1</td>
                 <td>PENGADAAN TANAH</td>
                 <td class="center"></td>
                 <td class="currency">
                     Rp.
-                    <span>72.000.000</span>
+                    <span>{{ number_format($type->land_price, 0, ',', '.') }}</span>
                 </td>
                 <td class="currency">
                     Rp.
-                    <span>72.000.000</span>
+                    <span>{{ number_format($type->land_price, 0, ',', '.') }}</span>
                 </td>
             </tr>
             <tr class="section-header">
@@ -80,16 +93,44 @@
                 <td class="center"></td>
                 <td class="currency">
                     Rp.
-                    <span>168.492.021</span>
+                    <span> {{ number_format($totalsByClassification->get('Konstruksi', 0), 0, ',', '.') }}</span>
                 </td>
             </tr>
             @php
                 $no = 1;
             @endphp
-            @foreach ($jobCategories as $category)
+            @foreach ($jobCategories->where('classification', 'Konstruksi') as $category)
                 @php
-                    // Ambil job_type spesifik untuk kategori ini dan project_type yang sedang aktif
                     $jobTypeForThisCategory = $category->job_types->where('type_id', $type->type_id)->first();
+
+                    $totalJobCost = collect($category->job_types)
+                        ->flatMap(fn($jt) => $jt->sub_jobs)
+                        ->sum(fn($sub) => $sub->total_volume * $sub->job_cost);
+
+                    // Hitung Total Prasarana Umum
+                    $prasaranaUmum = collect($jobCategories)
+                        ->where('classification', 'Prasarana')
+                        ->filter(fn($category) => strtolower($category->category_name) === 'fasilitas umum')
+                        ->flatMap(function ($category) use ($type) {
+                            return $category->job_types
+                                ->where('type_id', $type->type_id)
+                                ->flatMap(fn($jt) => $jt->sub_jobs);
+                        })
+                        ->sum(fn($sub) => $sub->total_volume * $sub->job_cost);
+
+                    $dividedCost =
+                        $type->project->capacity > 0 ? $prasaranaUmum / $type->project->capacity : $prasaranaUmum;
+
+                    // Hitung Sub Total Kategori Prasarana Non Umum
+                    $subtotalPrasarana = collect($jobCategories)
+                        ->where('classification', 'Prasarana')
+                        ->reject(fn($category) => strtolower($category->category_name) === 'fasilitas umum')
+                        ->flatMap(function ($category) use ($type) {
+                            return $category->job_types
+                                ->where('type_id', $type->type_id)
+                                ->flatMap(fn($jt) => $jt->sub_jobs);
+                        })
+                        ->sum(fn($sub) => $sub->total_volume * $sub->job_cost);
                 @endphp
                 <tr>
                     <td class="center">{{ $no++ }}</td>
@@ -101,17 +142,12 @@
                         @endif
                     </td>
                     <td class="center">
-                        <span>4%</span>
+                        <span>{{ number_format(($totalJobCost / $totalsByClassification->get('Konstruksi')) * 100, 0, ',', '.') }}%</span>
                     </td>
                     <td class="currency">
                         Rp.
                         <span>
-                            {{ number_format(
-                                collect($category->job_types)->flatMap(fn($jt) => $jt->sub_jobs)->sum(fn($sub) => $sub->total_volume * $sub->job_cost),
-                                0,
-                                ',',
-                                '.',
-                            ) }}
+                            {{ number_format($totalJobCost, 0, ',', '.') }}
                         </span>
                     </td>
                     <td class="center"></td>
@@ -123,13 +159,25 @@
                 <td class="center"></td>
                 <td class="currency">
                     Rp.
-                    <span>77.306.167</span>
+                    <span>{{ number_format($totalsByClassification->get('Sarana', 0) + $subtotalPrasarana + $dividedCost, 0, ',', '.') }}</span>
                 </td>
                 <td class="currency">
                     Rp.
-                    <span>77.306.167</span>
+                    <span>{{ number_format($totalsByClassification->get('Sarana', 0) + $subtotalPrasarana + $dividedCost, 0, ',', '.') }}</span>
                 </td>
             </tr>
+            @php
+                $totalHarga =
+                    $totalsByClassification->get('Konstruksi', 0) +
+                    $totalsByClassification->get('Sarana', 0) +
+                    $type->land_price +
+                    $subtotalPrasarana +
+                    $dividedCost;
+                $ppn = $totalHarga * 0.1;
+                $totalAkhir = $totalHarga + $ppn;
+                $kelipatan = 100000;
+                $totalPembulatan = ceil($totalAkhir / $kelipatan) * $kelipatan;
+            @endphp
             <tr class="section-header">
                 <td class="center">D</td>
                 <td><strong>ADMINISTRASI</strong></td>
@@ -138,11 +186,11 @@
                 </td>
                 <td class="currency">
                     Rp.
-                    <span>317.798.188</span>
+                    <span>{{ number_format($totalHarga, 0, ',', '.') }}</span>
                 </td>
                 <td class="currency">
                     Rp.
-                    <span>31.779.819</span>
+                    <span>{{ number_format($ppn, 0, ',', '.') }}</span>
                 </td>
             </tr>
             <tr class="total-row">
@@ -152,7 +200,7 @@
                 <td class="center"></td>
                 <td class="currency">
                     <strong>Rp.
-                        <span id="total">349.578.007</span></strong>
+                        <span id="total">{{ number_format($totalAkhir, 0, ',', '.') }}</span></strong>
                 </td>
             </tr>
             <tr class="total-row">
@@ -161,23 +209,12 @@
                 </td>
                 <td class="center"></td>
                 <td class="currency">
-                    <strong>Rp. <span>349.600.000</span></strong>
+                    <strong>Rp.
+                        <span id="total">{{ number_format($totalPembulatan, 0, ',', '.') }}</span></strong>
                 </td>
             </tr>
         </tbody>
     </table>
-
-    <div class="no-print">
-        <button class="edit-button" onclick="toggleEdit()">
-            Toggle Edit Mode
-        </button>
-        <button class="edit-button" onclick="window.print()">
-            Print
-        </button>
-        <button class="edit-button" onclick="calculateTotal()">
-            Hitung Total
-        </button>
-    </div>
 </body>
 
 </html>

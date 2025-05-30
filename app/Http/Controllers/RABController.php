@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\SubJob;
 use Illuminate\Http\Request;
 use App\Repositories\Interfaces\RABRepositoryInterface;
 
