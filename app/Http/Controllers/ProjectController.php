@@ -6,6 +6,8 @@ use App\Models\Project;
 use Illuminate\Http\Request;
 use App\Repositories\ProjectRepository;
 use Illuminate\Support\Facades\Storage;
+use SweetAlert2\Laravel\Swal;
+
 
 class ProjectController extends Controller
 {
@@ -49,7 +51,7 @@ class ProjectController extends Controller
             'project_name' => 'required',
             'location' => 'required',
             'year' => 'required|digits:4|integer',
-            'capacity' => 'integer|digits:3',
+            'capacity' => 'required|integer',
             'total_cost' => 'nullable',
             'image' => 'image|file|max:5000',
         ]);
@@ -90,23 +92,20 @@ class ProjectController extends Controller
             'project_name' => 'required',
             'location' => 'required',
             'year' => 'required|digits:4|integer',
-            'capacity' => 'integer|digits:3',
+            'capacity' => 'required|integer',
             'total_cost' => 'nullable',
             'image' => 'nullable|image|file|max:5000',
         ]);
 
-        // Cek apakah ada file gambar yang diunggah
         if ($request->hasFile('image')) {
-            // Hapus gambar lama jika ada
-            $project = $this->projectRepository->getProject($projectId); // Asumsi ada method ini di repository
+
+            $project = $this->projectRepository->getProject($projectId);
             if ($project && $project->image) {
-                Storage::delete($project->image); // Hapus file dari storage
+                Storage::delete($project->image);
             }
 
-            // Simpan gambar yang baru diunggah
             $validator['image'] = $request->file('image')->store('project-images');
         } else {
-            // Jika tidak ada gambar baru, hapus validasi 'image' dari array validator
             unset($validator['image']);
         }
 

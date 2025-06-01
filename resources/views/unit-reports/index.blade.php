@@ -27,6 +27,12 @@
                         <div class="card-body">
                             {{-- Tabel Laporan Pengeluaran --}}
                             @if ($type === 'expenses')
+                                <div class="text-center bg-primary rounded px-3 py-2 border border-primary mb-3">
+                                    <span class="text-white">Total Pengeluaran</span>
+                                    <br>
+                                    <span class="fw-bold fs-5 text-white">Rp
+                                        {{ number_format($totalExpense, 0, ',', '.') }}</span>
+                                </div>
                                 <div class="table-responsive">
                                     <table class="table table-striped mb-0 text-center" id="table1">
                                         <thead>
@@ -232,4 +238,25 @@
                 class="btn btn-secondary">Kembali</a>
         </div>
     </div>
+    @if (session('success'))
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '{{ session('success') }}',
+                theme: 'auto',
+            });
+        </script>
+    @endif
+
+    @if ($errors->any())
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops!',
+                html: `{!! implode('<br>', $errors->all()) !!}`,
+                theme: 'auto'
+            });
+        </script>
+    @endif
 </x-layout-report>

@@ -11,6 +11,7 @@
     <title>{{ $title }}</title>
     <!-- favicon -->
     <link rel="shortcut icon" href="{{ asset('dist/assets/compiled/svg/favicon.svg') }}" type="image/x-icon" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <link rel="stylesheet" href="{{ asset('dist/assets/extensions/simple-datatables/style.css') }}">
     <link rel="stylesheet" href="{{ asset('dist/assets/compiled/css/app.css') }}" />

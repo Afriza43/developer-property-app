@@ -138,5 +138,26 @@
                 </div>
             </div>
         </div>
+        @if (session('success'))
+            <script>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: '{{ session('success') }}',
+                    theme: 'auto',
+                });
+            </script>
+        @endif
+
+        @if ($errors->any())
+            <script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops!',
+                    html: `{!! implode('<br>', $errors->all()) !!}`,
+                    theme: 'auto'
+                });
+            </script>
+        @endif
     </x-requirement>
 </x-layout-rab>

@@ -59,7 +59,7 @@ class HouseController extends Controller
     public function show(Request $request, $houseId)
     {
         $type = $request->query('type');
-
+        $totalExpense = $this->houseRepository->sumExpense($houseId);
         $house = $this->houseRepository->getHouse($houseId);
         $expenseReports = [];
         $progressReports = [];
@@ -72,7 +72,7 @@ class HouseController extends Controller
             $photos = $this->houseRepository->showProgressPhoto($progressReports);
         }
 
-        return view('unit-reports.index', compact('house', 'type', 'expenseReports', 'progressReports', 'photos'));
+        return view('unit-reports.index', compact('house', 'type', 'expenseReports', 'progressReports', 'photos', 'totalExpense'));
     }
 
 

@@ -52,7 +52,7 @@
                                                     <form
                                                         action="{{ route('progress.destroy', $progres->progress_reports_id) }}"
                                                         method="POST" class="d-inline"
-                                                        onsubmit="return confirm('Hapus rumah ini?')">
+                                                        onsubmit="return confirm('Hapus laporan ini?')">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit" class="btn btn-danger">
@@ -206,4 +206,25 @@
             </div>
         </section>
     </div>
+    @if (session('success'))
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '{{ session('success') }}',
+                theme: 'auto',
+            });
+        </script>
+    @endif
+
+    @if ($errors->any())
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops!',
+                html: `{!! implode('<br>', $errors->all()) !!}`,
+                theme: 'auto'
+            });
+        </script>
+    @endif
 </x-layout-2>

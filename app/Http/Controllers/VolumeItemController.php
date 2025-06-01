@@ -14,13 +14,14 @@ class VolumeItemController extends Controller
         $this->volumeRepository = $volumeRepository;
     }
 
-    public function index($job_id)
+    public function index($job_id, Request $request)
     {
         $job = $this->volumeRepository->getSubJob($job_id);
         $volumes = $this->volumeRepository->getBySubJobId($job_id);
         $totalVolume = $this->volumeRepository->calculateTotalVolume($job_id);
+        $satuanVolume = $request->query('satuan_volume');
 
-        return view('volume.index', compact('job', 'volumes', 'totalVolume'));
+        return view('volume.index', compact('job', 'volumes', 'totalVolume', 'satuanVolume'));
     }
 
     public function store(Request $request, $job_id)
@@ -61,6 +62,6 @@ class VolumeItemController extends Controller
     {
         $this->volumeRepository->delete($volumeId);
 
-        return redirect()->route('volume.index', $jobId)->with('success', 'Data volume berhasil dihapus');
+        return redirect()->back()->with('success', 'Data volume berhasil dihapus');
     }
 }

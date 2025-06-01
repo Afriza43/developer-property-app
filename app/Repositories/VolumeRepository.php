@@ -37,16 +37,30 @@ class VolumeRepository implements VolumeRepositoryInterface
         $height = $request->input('height', 0);
         $wide = $request->input('wide', 0);
 
+        $satuanVolume = $request->query('satuan_volume');
 
-        if ($length > 0 && $width > 0 && $height > 0) {
-            $volumePerUnit = $length * $width * $height;
-            $wide = $length * $width;
-        } elseif ($wide > 0 && $height > 0) {
-            $volumePerUnit = $wide * $height;
-        } elseif ($request->input('volume_per_unit', 0) > 0) {
-            $volumePerUnit = $request->input('volume_per_unit', 0);
+        if ($satuanVolume === 'm3') {
+            if ($length > 0 && $width > 0 && $height > 0) {
+                $volumePerUnit = $length * $width * $height;
+                $wide = $length * $width;
+            } elseif ($wide > 0 && $height > 0) {
+                $volumePerUnit = $wide * $height;
+            } elseif ($request->input('volume_per_unit', 0) > 0) {
+                $volumePerUnit = $request->input('volume_per_unit', 0);
+            } else {
+                $volumePerUnit = 0;
+            }
+        } elseif ($satuanVolume === 'm2') {
+            if ($length > 0 && $width > 0) {
+                $wide = $length * $width;
+                $volumePerUnit = $wide;
+            } elseif ($request->input('wide', 0) > 0) {
+                $volumePerUnit = $request->input('wide', 0);
+            } else {
+                $volumePerUnit = 0;
+            }
         } else {
-            $volumePerUnit = 0;
+            $volumePerUnit = $request->input('volume_per_unit', 0);
         }
 
         VolumeItem::create([

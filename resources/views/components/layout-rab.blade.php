@@ -12,6 +12,7 @@
     <!-- favicon -->
     <link rel="shortcut icon" href="{{ asset('dist/assets/compiled/svg/favicon.svg') }}" type="image/x-icon" />
 
+
     <link rel="stylesheet" href="{{ asset('dist/assets/compiled/css/app.css') }}" />
     <link rel="stylesheet" href="{{ asset('dist/assets/compiled/css/app-dark.css') }}" />
     <link rel="stylesheet" href="{{ asset('dist/assets/compiled/css/iconly.css') }}" />
@@ -22,6 +23,7 @@
         integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous"> --}}
     <script src="{{ asset('dist/assets/extensions/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('dist/assets/extensions/jquery/jquery.mask.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>

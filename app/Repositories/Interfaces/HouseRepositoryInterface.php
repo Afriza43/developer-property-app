@@ -15,4 +15,6 @@ interface HouseRepositoryInterface
     public function deleteHouse($id);
     public function getProgressReports($id);
     public function getExpenseReports($id);
+    public function sumExpense($id);
+    public function showProgressPhoto($progressReports);
 }

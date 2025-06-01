@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="{{ asset('dist/assets/compiled/css/app.css') }}" />
     <link rel="stylesheet" href="{{ asset('dist/assets/compiled/css/app-dark.css') }}" />
     <link rel="stylesheet" href="{{ asset('dist/assets/compiled/css/iconly.css') }}" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     @stack('costum-css')
 
 </head>
@@ -51,6 +52,7 @@
 
     <script src="{{ asset('dist/assets/extensions/simple-datatables/umd/simple-datatables.js') }}"></script>
     <script src="{{ asset('dist/assets/static/js/pages/simple-datatables.js') }}"></script>
+
     <!-- untuk tempat sisipkan script javascript -->
     @stack('costum-script')
 </body>

@@ -40,15 +40,6 @@ class HouseRepository implements HouseRepositoryInterface
         return $countType;
     }
 
-    // public function getHouseById($id)
-    // {
-    //     return House::with(['project', 'expense_reports'])->where('project_id', $id)->get()->map(function ($house) {
-    //         $house->house_cost = $house->expense_reports->sum('total_expense');
-    //         $house->save();
-    //         return $house;
-    //     });
-    // }
-
     public function getHouseById($projectId)
     {
         $project = $this->getProject($projectId);
@@ -90,14 +81,6 @@ class HouseRepository implements HouseRepositoryInterface
     public function updateHouse($houseId, array $data)
     {
         $house = $this->getHouse($houseId);
-
-        // if (request()->hasFile('image')) {
-        //     if ($house->image && Storage::disk('public')->exists($house->image)) {
-        //         Storage::disk('public')->delete($house->image);
-        //     }
-        //     $data['image'] = request()->file('image')->store('images/houses', 'public');
-        // }
-
         $house->update($data);
         return $house;
     }
@@ -127,5 +110,11 @@ class HouseRepository implements HouseRepositoryInterface
         $photos = ProgressPhoto::whereIn('progress_reports_id', $progressIds)->get()->groupBy('progress_reports_id');
 
         return $photos;
+    }
+
+    public function sumExpense($id)
+    {
+        $totalExpense = ExpenseReport::where('house_id', $id)->sum('total_expense');
+        return $totalExpense;
     }
 }

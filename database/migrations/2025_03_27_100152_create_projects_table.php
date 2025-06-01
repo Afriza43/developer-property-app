@@ -18,7 +18,7 @@ return new class extends Migration
             $table->year('year');
             $table->integer('capacity');
             $table->decimal('total_cost', 13)->nullable();
-            $table->string('image')->nullable();
+            $table->string('image', 60)->nullable();
         });
 
         Schema::create('user_access', function (Blueprint $table) {

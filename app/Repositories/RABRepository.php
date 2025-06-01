@@ -76,14 +76,11 @@ class RABRepository implements RABRepositoryInterface
             'category_name' => $data['category_name'],
         ]);
 
-        // Tidak mengubah pivot job_types karena rename dilakukan terpisah
-
         return $category;
     }
 
     public function deleteJobCategory($jobtype_id)
     {
-        // Hapus job_type berdasarkan jobtype_id
         DB::table('job_types')->where('jobtype_id', $jobtype_id)->delete();
 
         return response()->json(['message' => 'Kategori berhasil dihapus.']);

@@ -12,7 +12,7 @@
                         </div>
                     </div>
                     {{-- Search Bar --}}
-                    <div class="col-md-10">
+                    <div class="col-md-9">
                         <form action="{{ route('categories.selectJobCategory', $projectType->type_id) }}"
                             method="GET">
                             <div class="input-group mb-3">
@@ -24,6 +24,10 @@
                                 </button>
                             </div>
                         </form>
+                    </div>
+                    <div class="col-md-1">
+                        <a href="{{ route('rab.index', ['type_id' => $projectType->type_id]) }}"
+                            class="btn btn-secondary">Kembali</a>
                     </div>
                 </div>
             </div>
@@ -74,8 +78,6 @@
                             </table>
                         </div>
                         <div class="d-flex justify-content-center gap-3 my-4">
-                            <a href="{{ route('rab.index', ['type_id' => $projectType->type_id]) }}"
-                                class="btn btn-secondary">Kembali</a>
                             <button type="submit" class="btn btn-primary">Simpan</button>
                         </div>
                     </form>
@@ -221,6 +223,27 @@
                 </div>
             </div>
         @endforeach
+        @if (session('success'))
+            <script>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: '{{ session('success') }}',
+                    theme: 'auto',
+                });
+            </script>
+        @endif
+
+        @if ($errors->any())
+            <script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops!',
+                    html: `{!! implode('<br>', $errors->all()) !!}`,
+                    theme: 'auto'
+                });
+            </script>
+        @endif
     </x-requirement>
     @push('scripts')
         <script>

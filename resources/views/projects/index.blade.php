@@ -160,7 +160,8 @@
                                         data-bs-target="#editProjectModal-{{ $project->project_id }}">
                                         <i class="bi bi-pencil-square"></i> Edit
                                     </button>
-                                    <form action="{{ route('projects.destroy', $project->project_id) }}" method="POST">
+                                    <form action="{{ route('projects.destroy', $project->project_id) }}" method="POST"
+                                        onsubmit="return confirm('Hapus perumahan ini?')">
                                         @csrf
                                         @method('DELETE')
                                         <button class="btn btn-danger">
@@ -194,22 +195,23 @@
                                         <label for="project_name" class="form-label">Nama Perumahan</label>
                                         <input type="text" class="form-control" id="project_name"
                                             name="project_name" value="{{ $project->project_name }}"
-                                            placeholder="Nama Perumahan...">
+                                            placeholder="Nama Perumahan..." required>
                                     </div>
                                     <div class="mb-3">
                                         <label for="location" class="form-label">Lokasi</label>
                                         <input type="text" class="form-control" id="location" name="location"
-                                            value="{{ $project->location }}" placeholder="Lokasi...">
+                                            value="{{ $project->location }}" placeholder="Lokasi..." required>
                                     </div>
                                     <div class="mb-3">
                                         <label for="year" class="form-label">Tahun</label>
                                         <input type="text" class="form-control" id="year" name="year"
-                                            value="{{ $project->year }}" placeholder="Tahun...">
+                                            value="{{ $project->year }}" placeholder="Tahun..." required>
                                     </div>
                                     <div class="mb-3">
                                         <label for="capacity" class="form-label">Kapasitas Rumah</label>
                                         <input type="number" class="form-control" id="capacity" name="capacity"
-                                            value="{{ $project->capacity }}" placeholder="Kapasitas Rumah...">
+                                            value="{{ $project->capacity }}" placeholder="Kapasitas Rumah..."
+                                            required>
                                     </div>
                                     <div class="mb-3">
                                         <label for="image">Upload Gambar</label>
@@ -265,22 +267,22 @@
                         <div class="mb-3">
                             <label for="project_name" class="form-label">Nama Perumahan</label>
                             <input type="text" class="form-control" id="project_name" name="project_name"
-                                placeholder="Nama Perumahan...">
+                                placeholder="Nama Perumahan..." required>
                         </div>
                         <div class="mb-3">
                             <label for="location" class="form-label">Lokasi</label>
                             <input type="text" class="form-control" id="location" name="location"
-                                placeholder="Lokasi...">
+                                placeholder="Lokasi..." required>
                         </div>
                         <div class="mb-3">
                             <label for="year" class="form-label">Tahun</label>
                             <input type="text" class="form-control" id="year" name="year"
-                                placeholder="Tahun...">
+                                placeholder="Tahun..." required>
                         </div>
                         <div class="mb-3">
                             <label for="capacity" class="form-label">Kapasitas Rumah</label>
                             <input type="number" class="form-control" id="capacity" name="capacity"
-                                placeholder="Kapasitas Rumah...">
+                                placeholder="Kapasitas Rumah..." required>
                         </div>
                         <div class="mb-3">
                             <label for="image">Upload Gambar</label>
@@ -301,25 +303,26 @@
         </div>
     </div>
 
-</x-body>
+    @if (session('success'))
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '{{ session('success') }}',
+                theme: 'auto',
+            });
+        </script>
+    @endif
 
-{{-- Gambar Preview
-            <div class="modal fade" id="imagePreviewModal" tabindex="-1" aria-labelledby="imagePreviewModalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="imagePreviewModalLabel">Pratinjau Gambar</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <img src="{{ asset('storage/' . $project->image) }}" class="img-fluid"
-                                alt="Pratinjau Gambar">
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        </div>
-                    </div>
-                </div>
-            </div> --}}
+    @if ($errors->any())
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops!',
+                html: `{!! implode('<br>', $errors->all()) !!}`,
+                theme: 'auto'
+            });
+        </script>
+    @endif
+
+</x-body>

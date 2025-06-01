@@ -59,7 +59,7 @@
                         <div class="card-body">
                             <!-- table bordered -->
                             <div class="table-responsive">
-                                <table class="table table-bordered">
+                                <table class="table table-bordered table-hover">
                                     <thead class="text-center">
                                         <tr>
                                             <th>No</th>
@@ -71,11 +71,12 @@
                                             <th>Aksi</th>
                                         </tr>
                                     </thead>
-                                    <tbody class="table-bordered ">
-                                        <tr>
-                                            <td class="text-center">A</td>
-                                            <td colspan="4" class="text-start"><strong>HARGA TANAH</strong></td>
-                                            <td class="text-end">
+                                    <tbody class="table-bordered">
+                                        <tr class="table-active bg-primary">
+                                            <td class="text-center text-white">A</td>
+                                            <td colspan="4" class="text-start text-white"><strong>HARGA
+                                                    TANAH</strong></td>
+                                            <td class="text-end text-white">
                                                 <strong>Rp {{ number_format($type->land_price, 0, ',', '.') }}</strong>
                                             </td>
                                             <td class="text-center">
@@ -87,9 +88,9 @@
                                         </tr>
 
                                         {{-- KONSTRUKSI BANGUNAN --}}
-                                        <tr>
-                                            <td class="text-center">B</td>
-                                            <td colspan="6" class="text-start"><strong>KONSTRUKSI BANGUNAN
+                                        <tr class="table-active bg-primary">
+                                            <td class="text-center text-white">B</td>
+                                            <td colspan="6" class="text-start text-white"><strong>KONSTRUKSI BANGUNAN
                                                     RUMAH</strong>
                                             </td>
                                         </tr>
@@ -210,7 +211,7 @@
                                                                             Harga
                                                                             Satuan</a></li>
                                                                     <li><a class="dropdown-item"
-                                                                            href="{{ route('volume.index', $sub->sub_job_id) }}">Edit
+                                                                            href="{{ route('volume.index', ['sub_job_id' => $sub->sub_job_id, 'satuan_volume' => $sub->job->satuan_volume]) }}">Edit
                                                                             Volume</a></li>
                                                                     <li>
                                                                         <button class="dropdown-item"
@@ -344,7 +345,8 @@
                                             </div>
                                         @endforeach
                                         <tr>
-                                            <td colspan="5" class="text-end"><strong>SUB TOTAL KONSTRUKSI</strong>
+                                            <td colspan="5" class="text-end"><strong>SUB TOTAL
+                                                    KONSTRUKSI</strong>
                                             </td>
                                             <td class="text-end">
                                                 <strong>Rp
@@ -355,9 +357,10 @@
                                         </tr>
 
                                         {{-- SARANA RUMAH --}}
-                                        <tr>
-                                            <td class="text-center">C</td>
-                                            <td colspan="6" class="text-start"><strong>SARANA RUMAH</strong>
+                                        <tr class="table-active bg-primary">
+                                            <td class="text-center text-white">C</td>
+                                            <td colspan="6" class="text-start text-white"><strong>SARANA
+                                                    RUMAH</strong>
                                             </td>
                                         </tr>
                                         @foreach ($jobCategories->where('classification', 'Sarana') as $category)
@@ -479,7 +482,7 @@
                                                                             Harga
                                                                             Satuan</a></li>
                                                                     <li><a class="dropdown-item"
-                                                                            href="{{ route('volume.index', $sub->sub_job_id) }}">Edit
+                                                                            href="{{ route('volume.index', ['sub_job_id' => $sub->sub_job_id, 'satuan_volume' => $sub->job->satuan_volume]) }}">Edit
                                                                             Volume</a></li>
                                                                     <li>
                                                                         <button class="dropdown-item"
@@ -553,6 +556,11 @@
                                                     <td colspan="5" class="text-end"><strong>Sub Jumlah
                                                         </strong></td>
                                                     <td colspan="1" class="text-end">
+                                                        @php
+                                                            $totalSubJobCost = collect($category->job_types)
+                                                                ->flatMap(fn($jobType) => $jobType->sub_jobs)
+                                                                ->sum(fn($sub) => $sub->total_volume * $sub->job_cost);
+                                                        @endphp
                                                         <strong>Rp
                                                             {{ number_format($totalSubJobCost, 0, ',', '.') }}
                                                         </strong>
@@ -620,9 +628,10 @@
 
 
                                         {{-- PRASARANA RUMAH --}}
-                                        <tr>
-                                            <td class="text-center">D</td>
-                                            <td colspan="6" class="text-start"><strong>PRASARANA RUMAH</strong>
+                                        <tr class="table-active bg-primary">
+                                            <td class="text-center text-white">D</td>
+                                            <td colspan="6" class="text-start text-white"><strong>PRASARANA
+                                                    RUMAH</strong>
                                             </td>
                                         </tr>
                                         @php
@@ -810,7 +819,7 @@
                                                                                 Harga
                                                                                 Satuan</a></li>
                                                                         <li><a class="dropdown-item"
-                                                                                href="{{ route('volume.index', $sub->sub_job_id) }}">Edit
+                                                                                href="{{ route('volume.index', ['sub_job_id' => $sub->sub_job_id, 'satuan_volume' => $sub->job->satuan_volume]) }}">Edit
                                                                                 Volume</a></li>
                                                                         <li>
                                                                             <button class="dropdown-item"
@@ -1038,7 +1047,8 @@
                                             </div>
                                         @endforeach
                                         <tr>
-                                            <td colspan="5" class="text-end"><strong>SUB TOTAL PRASARANA</strong>
+                                            <td colspan="5" class="text-end"><strong>SUB TOTAL
+                                                    PRASARANA</strong>
                                             </td>
                                             <td class="text-end">
                                                 <strong>Rp
@@ -1047,8 +1057,10 @@
                                             </td>
                                             <td></td>
                                         </tr>
-                                        <tr>
-                                            <td colspan="7"></td>
+                                        <tr class="bg-primary">
+                                            <td colspan="7" class="text-center text-white">
+                                                <strong>TOTAL BIAYA KESELURUHAN</strong>
+                                            </td>
                                         </tr>
                                         @php
                                             $totalHarga =
@@ -1061,22 +1073,24 @@
                                             $totalAkhir = $totalHarga + $ppn;
                                         @endphp
                                         <tr>
-                                            <td colspan="5" class="text-end"><strong>JUMLAH HARGA</strong></td>
-                                            <td class="text-end"><strong>Rp
+                                            <td colspan="5" class="text-end text-white"><strong>JUMLAH
+                                                    HARGA</strong></td>
+                                            <td class="text-end text-white"><strong>Rp
                                                     {{ number_format($totalHarga, 0, ',', '.') }}</strong></td>
                                             <td></td>
                                         </tr>
                                         <tr>
-                                            <td colspan="5" class="text-end"><strong>ADMINISTRASI 10.00
+                                            <td colspan="5" class="text-end text-white"><strong>ADMINISTRASI 10.00
                                                     %</strong>
                                             </td>
-                                            <td class="text-end"><strong>Rp
+                                            <td class="text-end text-white"><strong>Rp
                                                     {{ number_format($ppn, 0, ',', '.') }}</strong></td>
                                             <td></td>
                                         </tr>
                                         <tr>
-                                            <td colspan="5" class="text-end"><strong>TOTAL HARGA</strong></td>
-                                            <td class="text-end"><strong>Rp
+                                            <td colspan="5" class="text-end text-white"><strong>TOTAL
+                                                    HARGA</strong></td>
+                                            <td class="text-end text-white"><strong>Rp
                                                     {{ number_format($totalAkhir, 0, ',', '.') }}</strong></td>
                                             <td></td>
                                         </tr>
@@ -1087,7 +1101,7 @@
                                 <form action="{{ route('rab.updateBudgetPlan', ['type_id' => $type->type_id]) }}"
                                     method="POST">
                                     @csrf
-                                    <input type="hidden" name="budget_plan" value="{{ $totalHarga }}">
+                                    <input type="hidden" name="budget_plan" value="{{ $totalAkhir }}">
                                     <input type="hidden" name="project_id"
                                         value="{{ $type->project->project_id }}">
                                     <button type="submit" class="btn btn-success">Selesai</button>
@@ -1133,6 +1147,28 @@
             </form>
         </div>
     </div>
+
+    @if (session('success'))
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '{{ session('success') }}',
+                theme: 'auto',
+            });
+        </script>
+    @endif
+
+    @if ($errors->any())
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops!',
+                html: `{!! implode('<br>', $errors->all()) !!}`,
+                theme: 'auto'
+            });
+        </script>
+    @endif
     <script>
         $(document).ready(function() {
             $('#uang-format').mask('000.000.000', {

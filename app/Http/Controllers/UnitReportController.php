@@ -19,8 +19,9 @@ class UnitReportController extends Controller
         $progressReports = $this->reportRepository->getProgressReports($request->house_id);
         $expenseReports = $this->reportRepository->getExpenseReports($request->house_id);
         $photos = $this->reportRepository->showProgressPhoto($progressReports);
+        $totalExpense = $this->reportRepository->sumExpense($request->house_id);
 
-        return view('unit-reports.index', compact('progressReports', 'expenseReports', 'photos'));
+        return view('unit-reports.index', compact('progressReports', 'expenseReports', 'photos', 'totalExpense'));
     }
 
     public function exportPDF(Request $request)
@@ -42,7 +43,7 @@ class UnitReportController extends Controller
         $expenseReports = $this->reportRepository->getExpenseReports($houseId);
 
         // Hitung total pengeluaran
-        $totalExpense = $expenseReports->sum('total_expense');
+        $totalExpense = $this->reportRepository->sumExpense($houseId);
 
         $html = view('unit-reports.print-expenses', compact('expenseReports', 'totalExpense', 'houseId'))->render();
 

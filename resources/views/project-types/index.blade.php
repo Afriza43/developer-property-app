@@ -84,7 +84,8 @@
                                     </button>
 
                                     {{-- Tombol untuk Hapus --}}
-                                    <form action="{{ route('project-types.destroy', $type->type_id) }}" method="POST">
+                                    <form action="{{ route('project-types.destroy', $type->type_id) }}" method="POST"
+                                        onsubmit="return confirm('Hapus tipe ini?')">
                                         @csrf
                                         @method('DELETE')
                                         <button class="btn btn-danger">
@@ -115,22 +116,41 @@
                                     <div class="modal-body">
                                         <div class="mb-3">
                                             <label for="name" class="form-label">Nama Tipe</label>
-                                            <input type="text" class="form-control" id="name" name="name"
-                                                value="{{ $type->name }}" required>
+                                            <input type="text"
+                                                class="form-control @error('name') is-invalid @enderror" id="name"
+                                                name="name" value="{{ old('name', $type->name) }}" required>
+                                            @error('name')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                         <div class="mb-3">
                                             <label for="type" class="form-label">Kode Tipe</label>
-                                            <input type="text" class="form-control" id="type" name="type"
-                                                value="{{ $type->type }}" required>
+                                            <input type="text"
+                                                class="form-control @error('type') is-invalid @enderror" id="type"
+                                                name="type" value="{{ old('type', $type->type) }}" required>
+                                            @error('type')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
                                         </div>
+
                                         <div class="mb-3">
                                             <label for="identifier" class="form-label">Keterangan</label>
-                                            <input type="text" class="form-control" id="identifier"
-                                                name="identifier" value="{{ $type->identifier }}" required>
+                                            <input type="text"
+                                                class="form-control @error('identifier') is-invalid @enderror"
+                                                id="identifier" name="identifier"
+                                                value="{{ old('identifier', $type->identifier) }}" required>
+                                            @error('identifier')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
                                         </div>
+
                                         <div class="mb-3">
                                             <label for="image" class="form-label">Gambar (Opsional)</label>
-                                            <input type="file" name="image" class="form-control">
+                                            <input type="file" name="image"
+                                                class="form-control @error('image') is-invalid @enderror">
+                                            @error('image')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
                                             @if ($type->image)
                                                 <small class="text-muted d-block mt-1">Kosongkan jika tidak ingin
                                                     mengganti
@@ -139,8 +159,8 @@
                                                     class="img-fluid mt-2" style="max-height: 100px;">
                                             @endif
                                         </div>
-                                        <input type="hidden" name="project_id" value="{{ $type->project_id }}">
                                     </div>
+                                    <input type="hidden" name="project_id" value="{{ $projectId }}">
                                     <div class="modal-footer">
                                         <button type="submit" class="btn btn-success">Simpan</button>
                                         <button type="button" class="btn btn-secondary"
@@ -202,4 +222,25 @@
         </div>
     </div>
 
+    @if (session('success'))
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '{{ session('success') }}',
+                theme: 'auto',
+            });
+        </script>
+    @endif
+
+    @if ($errors->any())
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops!',
+                html: `{!! implode('<br>', $errors->all()) !!}`,
+                theme: 'auto'
+            });
+        </script>
+    @endif
 </x-body>

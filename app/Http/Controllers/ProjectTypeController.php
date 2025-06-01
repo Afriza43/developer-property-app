@@ -36,7 +36,7 @@ class ProjectTypeController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:15',
             'type' => 'required|string|max:8',
-            'identifier' => 'nullable|string|max:15',
+            'identifier' => 'nullable|string|max:30',
             'image' => 'nullable|image|mimes:jpeg,png,jpg',
             'project_id' => 'required|exists:projects,project_id',
         ]);
@@ -56,8 +56,9 @@ class ProjectTypeController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:15',
             'type' => 'required|string|max:8',
-            'identifier' => 'nullable|string|max:15',
+            'identifier' => 'nullable|string|max:30',
             'image' => 'nullable|image|mimes:jpeg,png,jpg',
+            'project_id' => 'required|exists:projects,project_id',
         ]);
 
         if ($request->hasFile('image')) {

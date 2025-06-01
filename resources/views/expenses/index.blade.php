@@ -146,6 +146,28 @@
         </div>
     </div>
 
+    @if (session('success'))
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '{{ session('success') }}',
+                theme: 'auto',
+            });
+        </script>
+    @endif
+
+    @if ($errors->any())
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops!',
+                html: `{!! implode('<br>', $errors->all()) !!}`,
+                theme: 'auto'
+            });
+        </script>
+    @endif
+
     <script src="{{ asset('dist/assets/extensions/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('dist/assets/extensions/jquery/jquery.mask.min.js') }}"></script>
     <script>
@@ -161,4 +183,5 @@
             });
         });
     </script>
+
 </x-layout-2>

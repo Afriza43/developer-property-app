@@ -1,4 +1,4 @@
-<x-layout-rab title="Daftar Sub Pekerjaan">
+<x-layout-rab title="Daftar Sub Pekerjaan/Kebutuhan Pekerjaan">
     <x-requirement pageName="Daftar Sub {{ $jobType->job_category->category_name }}">
         <div class="card mt-2">
             <div class="card-header">
@@ -6,8 +6,16 @@
                     <div class="col-md-2 d-flex">
                         <div class="button">
                             <div class="buttons">
-                                <button class="btn btn-success" data-bs-toggle="modal"
-                                    data-bs-target="#addJobModal">Tambah Sub Pekerjaan</button>
+                                @if ($jobType->job_category->classification == 'Sarana')
+                                    <button class="btn btn-success" data-bs-toggle="modal"
+                                        data-bs-target="#addJobModal">Tambah Sub Kebutuhan</button>
+                                @elseif ($jobType->job_category->classification == 'Prasarana')
+                                    <button class="btn btn-success" data-bs-toggle="modal"
+                                        data-bs-target="#addJobModal">Tambah Sub Fasilitas</button>
+                                @else
+                                    <button class="btn btn-success" data-bs-toggle="modal"
+                                        data-bs-target="#addJobModal">Tambah Sub Pekerjaan</button>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -18,7 +26,8 @@
                             method="GET">
                             <div class="input-group mb-3">
                                 <input type="text" name="search" class="form-control"
-                                    placeholder="Cari sub pekerjaan..." aria-label="Cari sub pekerjaan..."
+                                    placeholder="Cari Sub Pekerjaan/Kebutuhan Pekerjaan..."
+                                    aria-label="Cari Sub Pekerjaan/Kebutuhan Pekerjaan..."
                                     value="{{ request('search') }}">
                                 <button class="btn btn-outline-secondary" type="submit" id="button-search-equipment">
                                     <i class="bi bi-search h5"></i>
@@ -40,13 +49,14 @@
                 <div class="card">
                     <form action="{{ route('jobs.storeSelectedJob', $jobType->jobtype_id) }}" method="POST">
                         @csrf
-                        <div class="card-body bg-primary text-white">Pilih Pekerjaan</div>
+                        <div class="card-body bg-primary text-white">Pilih Sub
+                            {{ $jobType->job_category->category_name }}</div>
                         <div class="card-body table-responsive" style="max-height: 300px; overflow-y: auto">
                             <table class="table table-bordered">
                                 <thead class="text-center">
                                     <tr>
                                         <th>Pilih</th>
-                                        <th>Nama Pekerjaan</th>
+                                        <th>Keterangan</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
@@ -68,7 +78,7 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="2" class="text-center">Tidak ada pekerjaan tersedia.</td>
+                                            <td colspan="2" class="text-center">Tidak ada sub tersedia.</td>
                                         </tr>
                                     @endforelse
                                 </tbody>
@@ -84,12 +94,14 @@
             <!-- Kolom kanan: Pekerjaan yang sudah dipilih -->
             <div class="col-md-6">
                 <div class="card">
-                    <div class="card-body bg-success text-white">Pekerjaan Sudah Dipilih</div>
+                    <div class="card-body bg-success text-white">Sub
+                        {{ $jobType->job_category->category_name }} yang Dipilih
+                    </div>
                     <div class="card-body table-responsive" style="max-height: 400px; overflow-y: auto">
                         <table class="table table-bordered">
                             <thead class="text-center">
                                 <tr>
-                                    <th>Nama Pekerjaan</th>
+                                    <th>Keterangan</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
@@ -110,7 +122,8 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="2" class="text-center">Belum ada pekerjaan yang dipilih.</td>
+                                        <td colspan="2" class="text-center">Belum ada Sub
+                                            {{ $jobType->job_category->category_name }} yang dipilih.</td>
                                     </tr>
                                 @endforelse
                             </tbody>
@@ -127,14 +140,14 @@
                     @csrf
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="addJobModalLabel">Tambah Sub Pekerjaan</h5>
+                            <h5 class="modal-title" id="addJobModalLabel">Tambah Sub Pekerjaan/Kebutuhan</h5>
                             </h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                 aria-label="Tutup"></button>
                         </div>
                         <div class="modal-body">
                             <div class="mb-3">
-                                <label for="job_name" class="form-label">Nama Pekerjaan</label>
+                                <label for="job_name" class="form-label">Keterangan</label>
                                 <input type="text" class="form-control" id="job_name" name="job_name" required>
                             </div>
                             <div class="mb-3">
@@ -192,5 +205,26 @@
                 </div>
             </div>
         @endforeach
+        @if (session('success'))
+            <script>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: '{{ session('success') }}',
+                    theme: 'auto',
+                });
+            </script>
+        @endif
+
+        @if ($errors->any())
+            <script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops!',
+                    html: `{!! implode('<br>', $errors->all()) !!}`,
+                    theme: 'auto'
+                });
+            </script>
+        @endif
     </x-requirement>
 </x-layout-rab>

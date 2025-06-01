@@ -21,7 +21,7 @@ return new class extends Migration
 
         Schema::create('progress_photos', function (Blueprint $table) {
             $table->id('photo_id');
-            $table->string('image', 255);
+            $table->string('image', 60);
             $table->foreignId('progress_reports_id')->references('progress_reports_id')->on('progress_reports')->onDelete('cascade');
             $table->timestamps();
         });

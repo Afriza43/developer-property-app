@@ -201,8 +201,8 @@
                                                         </div>
                                                         <input type="hidden" class="form-control" id="project_id"
                                                             name="project_id" value="{{ $project->project_id }}">
-                                                        <input type="hidden" class="form-control" id="house_cost"
-                                                            name="house_cost">
+                                                        <input type="hidden" value="{{ $house->house_cost }}"
+                                                            class="form-control" id="house_cost" name="house_cost">
                                                         <input type="hidden" class="form-control" id="name"
                                                             name="name">
                                                     </div>
@@ -281,4 +281,25 @@
             </form>
         </div>
     </div>
+    @if (session('success'))
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '{{ session('success') }}',
+                theme: 'auto',
+            });
+        </script>
+    @endif
+
+    @if ($errors->any())
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops!',
+                html: `{!! implode('<br>', $errors->all()) !!}`,
+                theme: 'auto'
+            });
+        </script>
+    @endif
 </x-layout-house>

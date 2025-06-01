@@ -15,6 +15,8 @@
     <link rel="stylesheet" href="{{ asset('dist/assets/compiled/css/app.css') }}" />
     <link rel="stylesheet" href="{{ asset('dist/assets/compiled/css/app-dark.css') }}" />
     <link rel="stylesheet" href="{{ asset('dist/assets/compiled/css/iconly.css') }}" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <!-- untuk tempat sisipkan script css -->
     @stack('costum-css')
     {{-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"

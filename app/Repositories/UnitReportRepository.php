@@ -26,4 +26,10 @@ class UnitReportRepository implements UnitReportRepositoryInterface
         $ids = $progressCollection->pluck('progress_reports_id');
         return ProgressPhoto::whereIn('progress_reports_id', $ids)->get();
     }
+
+    public function sumExpense($id)
+    {
+        $totalExpense = ExpenseReport::where('house_id', $id)->sum('total_expense');
+        return $totalExpense;
+    }
 }

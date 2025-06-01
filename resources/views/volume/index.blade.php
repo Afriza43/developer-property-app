@@ -17,18 +17,40 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header d-flex">
-                        <div class="alert alert-primary m-0">
-                            Total Volume: {{ number_format($totalVolume, 2) }} m³
-                        </div>
-                        <button class="btn btn-success mx-2" data-bs-toggle="modal" data-bs-target="#modalTambahPLT">
-                            Hitung Volume (P×L×T)
-                        </button>
-                        <button class="btn btn-success mx-2" data-bs-toggle="modal" data-bs-target="#modalTambahLT">
-                            Hitung Volume (Luas×T)
-                        </button>
-                        <button class="btn btn-success mx-2" data-bs-toggle="modal" data-bs-target="#modalTambahV">
-                            Hitung Volume (Volume)
-                        </button>
+                        @if ($satuanVolume === 'm3')
+                            <div class="alert alert-primary m-0">
+                                Total Volume: {{ number_format($totalVolume, 2) }} m³
+                            </div>
+                            <button class="btn btn-success mx-2" data-bs-toggle="modal"
+                                data-bs-target="#modalTambahPLT">
+                                Hitung Volume (P×L×T)
+                            </button>
+                            <button class="btn btn-success mx-2" data-bs-toggle="modal" data-bs-target="#modalTambahLT">
+                                Hitung Volume (Luas×T)
+                            </button>
+                            <button class="btn btn-success mx-2" data-bs-toggle="modal" data-bs-target="#modalTambahV">
+                                Hitung Volume (Volume)
+                            </button>
+                        @elseif ($satuanVolume === 'm2')
+                            <div class="alert alert-primary m-0">
+                                Total Luas: {{ number_format($totalVolume, 2) }} m²
+                            </div>
+                            <button class="btn btn-success mx-2" data-bs-toggle="modal"
+                                data-bs-target="#modalTambahPLT">
+                                Hitung Luas (P×L)
+                            </button>
+                            <button class="btn btn-success mx-2" data-bs-toggle="modal" data-bs-target="#modalTambahLT">
+                                Hitung Luas (Luas)
+                            </button>
+                        @else
+                            <div class="alert alert-primary m-0">
+                                Total Satuan: {{ number_format($totalVolume, 2) }} {{ $satuanVolume }}
+                            </div>
+                            <button class="btn btn-success mx-2" data-bs-toggle="modal" data-bs-target="#modalTambahV">
+                                Hitung Satuan ({{ $satuanVolume }})
+                            </button>
+                        @endif
+
                     </div>
 
                     <div class="card-body">
@@ -38,12 +60,22 @@
                                     <tr>
                                         <th>Deskripsi</th>
                                         <th>Jumlah</th>
-                                        <th>Panjang</th>
-                                        <th>Lebar</th>
-                                        <th>Tinggi</th>
-                                        <th>Luas</th>
-                                        <th>Volume/Unit</th>
-                                        <th>Volume Total</th>
+                                        @if ($satuanVolume === 'm2')
+                                            <th>Panjang</th>
+                                            <th>Lebar</th>
+                                            <th>Luas</th>
+                                            <th>Luas Total</th>
+                                        @elseif ($satuanVolume === 'm3')
+                                            <th>Panjang</th>
+                                            <th>Lebar</th>
+                                            <th>Tinggi</th>
+                                            <th>Luas</th>
+                                            <th>Volume/Unit</th>
+                                            <th>Volume Total</th>
+                                        @else
+                                            <th>Nilai Satuan</th>
+                                            <th>Total Nilai</th>
+                                        @endif
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
@@ -52,12 +84,22 @@
                                         <tr>
                                             <td>{{ $item->description }}</td>
                                             <td>{{ $item->amount }}</td>
-                                            <td>{{ $item->length == 0 ? '-' : $item->length }}</td>
-                                            <td>{{ $item->width == 0 ? '-' : $item->width }}</td>
-                                            <td>{{ $item->height == 0 ? '-' : $item->height }}</td>
-                                            <td>{{ $item->wide == 0 ? '-' : $item->wide }}</td>
-                                            <td>{{ number_format($item->volume_per_unit, 2) }}</td>
-                                            <td>{{ number_format($item->volume_per_unit * $item->amount, 2) }}</td>
+                                            @if ($satuanVolume === 'm2')
+                                                <td>{{ $item->length == 0 ? '-' : $item->length }}</td>
+                                                <td>{{ $item->width == 0 ? '-' : $item->width }}</td>
+                                                <td>{{ number_format($item->volume_per_unit, 2) }}</td>
+                                                <td>{{ number_format($item->volume_per_unit * $item->amount, 2) }}</td>
+                                            @elseif ($satuanVolume === 'm3')
+                                                <td>{{ $item->length == 0 ? '-' : $item->length }}</td>
+                                                <td>{{ $item->width == 0 ? '-' : $item->width }}</td>
+                                                <td>{{ $item->height == 0 ? '-' : $item->height }}</td>
+                                                <td>{{ $item->wide == 0 ? '-' : $item->wide }}</td>
+                                                <td>{{ number_format($item->volume_per_unit, 2) }}</td>
+                                                <td>{{ number_format($item->volume_per_unit * $item->amount, 2) }}</td>
+                                            @else
+                                                <td>{{ number_format($item->volume_per_unit, 2) }}</td>
+                                                <td>{{ number_format($item->volume_per_unit * $item->amount, 2) }}</td>
+                                            @endif
                                             <td>
                                                 <button class="btn btn-warning dropdown-toggle btn-sm" type="button"
                                                     id="dropdownEdit{{ $item->volume_items_id }}"
@@ -66,15 +108,46 @@
                                                 </button>
                                                 <ul class="dropdown-menu"
                                                     aria-labelledby="dropdownEdit{{ $item->volume_items_id }}">
-                                                    <li><a class="dropdown-item" data-bs-toggle="modal"
-                                                            data-bs-target="#modalEditPLT{{ $item->volume_items_id }}">Edit
-                                                            P×L×T</a></li>
-                                                    <li><a class="dropdown-item" data-bs-toggle="modal"
-                                                            data-bs-target="#modalEditLuasT{{ $item->volume_items_id }}">Edit
-                                                            Luas×T</a></li>
-                                                    <li><a class="dropdown-item" data-bs-toggle="modal"
-                                                            data-bs-target="#modalEditVolume{{ $item->volume_items_id }}">Edit
-                                                            Volume</a></li>
+                                                    @if ($satuanVolume === 'm2')
+                                                        <li>
+                                                            <a class="dropdown-item" data-bs-toggle="modal"
+                                                                data-bs-target="#modalEditPLT{{ $item->volume_items_id }}">Edit
+                                                                P×L
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item" data-bs-toggle="modal"
+                                                                data-bs-target="#modalEditLuasT{{ $item->volume_items_id }}">Edit
+                                                                Luas
+                                                            </a>
+                                                        </li>
+                                                    @elseif ($satuanVolume === 'm3')
+                                                        <li>
+                                                            <a class="dropdown-item" data-bs-toggle="modal"
+                                                                data-bs-target="#modalEditPLT{{ $item->volume_items_id }}">Edit
+                                                                P×L×T
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item" data-bs-toggle="modal"
+                                                                data-bs-target="#modalEditLuasT{{ $item->volume_items_id }}">Edit
+                                                                Luas×T
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item" data-bs-toggle="modal"
+                                                                data-bs-target="#modalEditVolume{{ $item->volume_items_id }}">Edit
+                                                                Volume
+                                                            </a>
+                                                        </li>
+                                                    @else
+                                                        <li>
+                                                            <a class="dropdown-item" data-bs-toggle="modal"
+                                                                data-bs-target="#modalEditVolume{{ $item->volume_items_id }}">Edit
+                                                                Nilai Satuan
+                                                            </a>
+                                                        </li>
+                                                    @endif
                                                     <li>
                                                         <form method="POST"
                                                             action="{{ route('volume.destroy', ['sub_job_id' => $job->sub_job_id, 'volume' => $item->volume_items_id]) }}"
@@ -129,11 +202,14 @@
                                                                 <input type="number" step="any" name="width"
                                                                     value="{{ $item->width }}" class="form-control">
                                                             </div>
-                                                            <div class="col-md-4">
-                                                                <label>Tinggi (m)</label>
-                                                                <input type="number" step="any" name="height"
-                                                                    value="{{ $item->height }}" class="form-control">
-                                                            </div>
+                                                            @if ($satuanVolume === 'm3')
+                                                                <div class="col-md-4">
+                                                                    <label>Tinggi (m)</label>
+                                                                    <input type="number" step="any"
+                                                                        name="height" value="{{ $item->height }}"
+                                                                        class="form-control">
+                                                                </div>
+                                                            @endif
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button class="btn btn-success"
@@ -174,11 +250,14 @@
                                                                 <input type="number" step="any" name="wide"
                                                                     value="{{ $item->wide }}" class="form-control">
                                                             </div>
-                                                            <div class="col-md-6">
-                                                                <label>Tinggi (m)</label>
-                                                                <input type="number" step="any" name="height"
-                                                                    value="{{ $item->height }}" class="form-control">
-                                                            </div>
+                                                            @if ($satuanVolume === 'm3')
+                                                                <div class="col-md-6">
+                                                                    <label>Tinggi (m)</label>
+                                                                    <input type="number" step="any"
+                                                                        name="height" value="{{ $item->height }}"
+                                                                        class="form-control">
+                                                                </div>
+                                                            @endif
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button class="btn btn-success"
@@ -194,7 +273,7 @@
                                             <div class="modal-dialog modal-md">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h5>Edit Volume Langsung</h5>
+                                                        <h5>Edit Nilai Satuan</h5>
                                                         <button type="button" class="btn-close"
                                                             data-bs-dismiss="modal"></button>
                                                     </div>
@@ -215,7 +294,13 @@
                                                                     value="{{ $item->amount }}" class="form-control">
                                                             </div>
                                                             <div class="col-md-12">
-                                                                <label>Volume (m³)</label>
+                                                                @if ($satuanVolume === 'm3')
+                                                                    <label>Volume (m³)</label>
+                                                                @elseif ($satuanVolume === 'm2')
+                                                                    <label>Luas (m²)</label>
+                                                                @else
+                                                                    <label>Nilai Satuan ({{ $satuanVolume }})</label>
+                                                                @endif
                                                                 <input type="number" step="any"
                                                                     name="volume_per_unit"
                                                                     value="{{ $item->volume_per_unit }}"
@@ -254,7 +339,8 @@
                     <h5 class="modal-title" id="modalTambahPLTLabel">Hitung Volume (P × L × T)</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form method="POST" action="{{ route('volume.store', ['sub_job_id' => $job->sub_job_id]) }}">
+                <form method="POST"
+                    action="{{ route('volume.store', ['sub_job_id' => $job->sub_job_id]) }}?satuan_volume={{ $satuanVolume }}">
                     @csrf
                     <div class="modal-body">
                         <div class="row mb-3">
@@ -281,13 +367,15 @@
                                     placeholder="0.0">
                             </div>
                         </div>
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="height" class="form-label">Tinggi (m)</label>
-                                <input type="number" step="any" name="height" class="form-control"
-                                    placeholder="0.0">
+                        @if ($satuanVolume === 'm3')
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="height" class="form-label">Tinggi (m)</label>
+                                    <input type="number" step="any" name="height" class="form-control"
+                                        placeholder="0.0">
+                                </div>
                             </div>
-                        </div>
+                        @endif
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary">Hitung</button>
@@ -307,7 +395,8 @@
                     <h5 class="modal-title" id="modalTambahLTLabel">Hitung Volume (Luas × T)</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form method="POST" action="{{ route('volume.store', ['sub_job_id' => $job->sub_job_id]) }}">
+                <form method="POST"
+                    action="{{ route('volume.store', ['sub_job_id' => $job->sub_job_id]) }}?satuan_volume={{ $satuanVolume }}">
                     @csrf
                     <div class="modal-body">
                         <div class="row mb-3">
@@ -328,11 +417,13 @@
                                 <input type="number" step="any" name="wide" class="form-control"
                                     placeholder="0.0">
                             </div>
-                            <div class="col-md-6">
-                                <label for="height2" class="form-label">Tinggi (m)</label>
-                                <input type="number" step="any" name="height" class="form-control"
-                                    placeholder="0.0">
-                            </div>
+                            @if ($satuanVolume === 'm3')
+                                <div class="col-md-6">
+                                    <label for="height2" class="form-label">Tinggi (m)</label>
+                                    <input type="number" step="any" name="height" class="form-control"
+                                        placeholder="0.0">
+                                </div>
+                            @endif
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -350,10 +441,11 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalTambahVLabel">Input Volume Langsung</h5>
+                    <h5 class="modal-title" id="modalTambahVLabel">Input Nilai Satuan</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form method="POST" action="{{ route('volume.store', ['sub_job_id' => $job->sub_job_id]) }}">
+                <form method="POST"
+                    action="{{ route('volume.store', ['sub_job_id' => $job->sub_job_id]) }}?satuan_volume={{ $satuanVolume }}">
                     @csrf
                     <div class="modal-body">
                         <div class="row mb-3">
@@ -370,7 +462,13 @@
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <label for="volume" class="form-label">Volume (m³)</label>
+                                @if ($satuanVolume === 'm3')
+                                    <label>Volume (m³)</label>
+                                @elseif ($satuanVolume === 'm2')
+                                    <label>Luas (m²)</label>
+                                @else
+                                    <label>Nilai Satuan ({{ $satuanVolume }})</label>
+                                @endif
                                 <input type="number" step="any" name="volume_per_unit" class="form-control"
                                     placeholder="0.0">
                             </div>
@@ -383,6 +481,26 @@
             </div>
         </div>
     </div>
+    @if (session('success'))
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '{{ session('success') }}',
+                theme: 'auto',
+            });
+        </script>
+    @endif
 
+    @if ($errors->any())
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops!',
+                html: `{!! implode('<br>', $errors->all()) !!}`,
+                theme: 'auto'
+            });
+        </script>
+    @endif
 
 </x-layout-rab>
